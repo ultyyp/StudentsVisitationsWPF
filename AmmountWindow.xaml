@@ -1,0 +1,15 @@
+﻿<Window x:Class="StudentsVisitationsWPF.AmmountWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:StudentsVisitationsWPF"
+        mc:Ignorable="d"
+        Title="" Height="100" Width="200">
+    <Grid>
+        <TextBox Name="AmmountTextBox" HorizontalAlignment="Left" TextWrapping="Wrap" Text="" VerticalAlignment="Center" Width="61" Margin="108,0,0,0"  KeyDown="OnKeyDownHandler"/>
+
+        <Label Content="Enter Ammount:" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center"/>
+
+    </Grid>
+</Window>
