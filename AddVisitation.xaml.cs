@@ -26,13 +26,13 @@ namespace StudentsVisitationsWPF
 
         private void AddButton_Click(object sender, RoutedEventArgs e)
         {
-            Visitation vs = new Visitation();
+            DBMethods.Visitation vs = new DBMethods.Visitation();
             vs.STUDENTID = int.Parse(STUDENTIDTextBox.Text);
             DateTime dt = DATEDatePicker.SelectedDate.Value;
             vs.DATE = new DateOnly(dt.Year, dt.Month, dt.Day);
             try
             {
-                AddVisit(vs);
+                DBMethods.AddVisit(vs);
                 MessageBox.Show("Visit Added!");
                 this.Close();
             }
@@ -44,16 +44,6 @@ namespace StudentsVisitationsWPF
             
         }
 
-        public async void AddVisit(Visitation visit)
-        {
-            await using (var db = new AppDbContext())
-            {
-                await db.Visitations.AddAsync(visit);
-                await db.SaveChangesAsync();
-
-                //await db.Database.ExecuteSqlRawAsync($"INSERT INTO Visitations (STUDENTID, DATE)" +
-                //        $"VALUES ({visit.STUDENTID}, '{visit.DATE}');");
-            }
-        }
+        
     }
 }

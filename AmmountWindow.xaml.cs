@@ -43,9 +43,9 @@ namespace StudentsVisitationsWPF
                 int ammount = int.Parse(AmmountTextBox.Text);
                 if (type == "student")
                 {
-                    if (ammount > 0 && StudentTableExists() == true)
+                    if (ammount > 0 && DBMethods.StudentTableExists() == true)
                     {
-                        GenerateStudents(ammount);
+                        DBMethods.GenerateStudents(ammount);
                     }
                     else
                     {
@@ -55,9 +55,9 @@ namespace StudentsVisitationsWPF
                 }
                 else if (type == "visitation")
                 {
-                    if (ammount > 0 && VisitationTableExists() == true)
+                    if (ammount > 0 && DBMethods.VisitationTableExists() == true)
                     {
-                        GenerateVisitations(ammount);
+                        DBMethods.GenerateVisitations(ammount);
                     }
                     else
                     {
@@ -69,174 +69,15 @@ namespace StudentsVisitationsWPF
             }
         }
 
-        public bool StudentTableExists()
-        {
-            using var connection = new SqliteConnection(connectionString);
-            connection.Open();
-            using var command = connection.CreateCommand();
-            command.CommandText = "SELECT count(*) FROM sqlite_master WHERE type = 'table' AND name = 'Students';";
-            Int64 count = (Int64)command.ExecuteScalar();
-            if (count >= 1)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
+        
 
-        public bool VisitationTableExists()
-        {
-            using var connection = new SqliteConnection(connectionString);
-            connection.Open();
-            using var command = connection.CreateCommand();
-            command.CommandText = "SELECT count(*) FROM sqlite_master WHERE type = 'table' AND name = 'Visitations';";
-            Int64 count = (Int64)command.ExecuteScalar();
-            if (count >= 1)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
+       
 
-        public async void AddStudent(Student student)
-        {
-            try
-            {
-                await using (var db = new AppDbContext())
-                {
-                    await db.Students.AddAsync(student);
-                    await db.SaveChangesAsync();
+        
 
-                    //await db.Database.ExecuteSqlRawAsync($"INSERT INTO Students (FIO, DOB, EMAIL)" +
-                    //      $"VALUES ('{student.FIO}', '{student.DOB}', '{student.EMAIL}');");
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"{ex}");
-            }
-        }
-
-        void GenerateStudents(int ammount)
-        {
-            if (ammount == 0) { return; }
-
-            //Name & email Generator 
-            var studentFaker = new Faker<Student>("en")
-                .RuleFor(it => it.FIO, f => f.Name.FullName())
-                .RuleFor(it => it.EMAIL, (f, it) => f.Internet.Email(it.FIO));
-
-            //Randomiser
-            var randomiser = new Bogus.Randomizer();
-
-            //Generation
-            for (int i = 0; i < ammount; i++)
-            {
-                var randominfo = studentFaker.Generate();
-                Student student = new Student
-                {
-                    FIO = randominfo.FIO,
-                    DOB = new DateOnly(randomiser.Int(1970, 2022), randomiser.Int(1, 12), randomiser.Int(1, 29)),
-                    EMAIL = randominfo.EMAIL
-                };
-                AddStudent(student);
-            }
-
-            MessageBox.Show("Students Generated!");
-
-        }
-
-        public bool StudentExists(int id)
-        {
-            using var connection = new SqliteConnection(connectionString);
-            connection.Open();
-            using var command = connection.CreateCommand();
-            command.CommandText = $"SELECT COUNT(*) FROM Students WHERE ID = {id};";
-            Int64 count = (Int64)command.ExecuteScalar();
-            if (count > 0)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
+        
 
 
-        public async void AddVisitation(Visitation visit)
-        {
-            try
-            {
-                await using (var db = new AppDbContext())
-                {
-                    await db.Visitations.AddAsync(visit);
-                    await db.SaveChangesAsync();
-
-                    //await db.Database.ExecuteSqlRawAsync($"INSERT INTO Visitations (STUDENTID, DATE)" +
-                    //        $"VALUES ({visit.STUDENTID}, '{visit.DATE}');");
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"{ex}");
-            }
-        }
-
-        public Int64 StudentsGetCount()
-        {
-            using var connection = new SqliteConnection(connectionString);
-            connection.Open();
-            using var command = connection.CreateCommand();
-            command.CommandText = "SELECT COUNT(*) FROM Students;";
-            Int64 count = (Int64)command.ExecuteScalar();
-            return count;
-        }
-
-        public async Task<Student[]> GetStudents()
-        {
-            await using (var db = new AppDbContext())
-            {
-                List<Student> students = await db.Students.ToListAsync();
-                return students.ToArray();
-            }
-        }
-
-
-        async void GenerateVisitations(int ammount)
-        {
-            if (StudentsGetCount() > 0)
-            {
-                if (ammount == 0) { return; }
-                //Randomiser
-                var randomiser = new Bogus.Randomizer();
-                //Students
-                var stu = await GetStudents();
-
-                //Generation
-                for (int i = 0; i < ammount; i++)
-                {
-                    Visitation visitation = new Visitation
-                    {
-                        STUDENTID = randomiser.Int(1, (int)StudentsGetCount()),
-                    };
-                    DateOnly bd = stu[visitation.STUDENTID - 1].DOB;
-                    visitation.DATE = new DateOnly(randomiser.Int(bd.Year + 1, 2023), randomiser.Int(bd.Month, 12), randomiser.Int(bd.Day, 29));
-                    AddVisitation(visitation);
-                }
-
-                MessageBox.Show("Visitations Generated!");
-
-            }
-            else
-            {
-                MessageBox.Show("Students Table Is Empty!");
-            }
-        }
+        
     }
 }

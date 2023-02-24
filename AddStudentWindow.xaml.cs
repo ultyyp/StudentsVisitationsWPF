@@ -26,34 +26,17 @@ namespace StudentsVisitationsWPF
 
         private void AddButton_Click(object sender, RoutedEventArgs e)
         {
-            Student st = new Student();
+            DBMethods.Student st = new DBMethods.Student();
             st.FIO = FIOTextBox.Text.Trim();
             DateTime dt = DOBDatePicker.SelectedDate.Value;
             st.DOB = new DateOnly(dt.Year, dt.Month, dt.Day);
             st.EMAIL = EMAILTextBox.Text.Trim();
-            AddStudent(st);
+            DBMethods.AddStudent(st);
             MessageBox.Show("Student Added!");
             this.Close();
         }
 
-        public async void AddStudent(Student student)
-        {
-            try
-            {
-                await using (var db = new AppDbContext())
-                {
-                    await db.Students.AddAsync(student);
-                    await db.SaveChangesAsync();
-
-                    //await db.Database.ExecuteSqlRawAsync($"INSERT INTO Students (FIO, DOB, EMAIL)" +
-                    //      $"VALUES ('{student.FIO}', '{student.DOB}', '{student.EMAIL}');");
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"{ex}");
-            }
-        }
+        
 
     }
 }
