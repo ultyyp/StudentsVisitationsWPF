@@ -53,6 +53,16 @@ namespace StudentsVisitationsWPF
                             ((MainWindow)Application.Current.MainWindow).InfoGrid.Items.Add(visitations[i]);
                         }
                     }
+                    if(((MainWindow)Application.Current.MainWindow).InfoGrid.Items.Count==0)
+                    {
+                        MessageBox.Show("No visitations for that day found!");
+                    }
+                    else
+                    {
+                        MessageBox.Show("Search Complete!");
+                        this.Close();
+                    }
+                    
                 }
                 else
                 {

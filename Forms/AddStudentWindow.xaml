@@ -9,7 +9,7 @@
     <Grid>
         <Label Content="FIO:" HorizontalAlignment="Left" Margin="49,55,0,0" VerticalAlignment="Top" Width="55"/>
         <Label Content="DOB:" HorizontalAlignment="Left" Margin="49,0,0,0" VerticalAlignment="Center" Width="55"/>
-        <Label Content="EMAIL:" HorizontalAlignment="Left" Margin="49,117,0,0" VerticalAlignment="Top" Width="55" RenderTransformOrigin="0.495,1.211"/>
+        <Label Content="Email:" HorizontalAlignment="Left" Margin="49,117,0,0" VerticalAlignment="Top" Width="55" RenderTransformOrigin="0.495,1.211"/>
         <TextBox Name ="FIOTextBox" HorizontalAlignment="Left" Margin="102,59,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="132"/>
         <DatePicker Name="DOBDatePicker" HorizontalAlignment="Left" Margin="104,86,0,0" VerticalAlignment="Top"/>
         <TextBox Name="EMAILTextBox" HorizontalAlignment="Left" Margin="102,121,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
