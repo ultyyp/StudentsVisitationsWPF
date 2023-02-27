@@ -110,6 +110,34 @@ namespace StudentsVisitationsWPF
         //    }
         //}
 
+        public static async void ClearStudents()
+        {
+            await using (var db = new AppDbContext())
+            {
+                foreach (var item in db.Students)
+                {
+                    db.Students.Remove(item);
+                }
+                db.SaveChanges();
+                MessageBox.Show("Students Cleared!");
+                ClearItems();
+            } 
+        }
+
+        public static async void ClearVisitations()
+        {
+            await using (var db = new AppDbContext())
+            {
+                foreach (var item in db.Visitations)
+                {
+                    db.Visitations.Remove(item);
+                }
+                db.SaveChanges();
+                MessageBox.Show("Visitations Cleared!");
+                ClearItems();
+            }
+        }
+
         public static async Task<Visitation[]> GetVisitations()
         {
             try

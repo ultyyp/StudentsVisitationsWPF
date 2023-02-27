@@ -113,11 +113,15 @@ namespace StudentsVisitationsWPF
             }
         }
 
-        
+        private void ClearStudents_Click(object sender, RoutedEventArgs e)
+        {
+            DBMethods.ClearStudents();
+        }
 
-        
-
-        
+        private void ClearVisitations_Click(object sender, RoutedEventArgs e)
+        {
+            DBMethods.ClearVisitations();
+        }
     }
 }
 
