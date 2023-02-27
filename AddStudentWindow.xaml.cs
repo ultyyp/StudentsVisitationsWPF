@@ -27,6 +27,7 @@ namespace StudentsVisitationsWPF
         private void AddButton_Click(object sender, RoutedEventArgs e)
         {
             DBMethods.Student st = new DBMethods.Student();
+            st.ID = Guid.NewGuid();
             st.FIO = FIOTextBox.Text.Trim();
             DateTime dt = DOBDatePicker.SelectedDate.Value;
             st.DOB = new DateOnly(dt.Year, dt.Month, dt.Day);

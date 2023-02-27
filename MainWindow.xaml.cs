@@ -17,9 +17,13 @@ using Microsoft.EntityFrameworkCore.Sqlite;
 using Bogus;
 using System.ComponentModel;
 using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore.Design;
+using StudentsVisitationsWPF.Migrations;
 
 namespace StudentsVisitationsWPF
 {
+    
+
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
@@ -30,18 +34,6 @@ namespace StudentsVisitationsWPF
             InitializeComponent();
         }
 
-        private void CreateTablesButton_Click(object sender, RoutedEventArgs e)
-        {
-            DBMethods.CreateTables();
-        }
-
-        private void DropTablesButton_Click(object sender, RoutedEventArgs e)
-        {
-            DBMethods.DropTables();
-            DBMethods.ClearColumns();
-            DBMethods.ClearItems();
-        }
-
         private void SearchVisitationButton_Click(object sender, RoutedEventArgs e)
         {
             SearchWindow sw = new SearchWindow();
@@ -50,30 +42,14 @@ namespace StudentsVisitationsWPF
 
         private void GenerateStudentsButton_Click(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                AmmountWindow amw = new AmmountWindow("student");
-                amw.ShowDialog();
-            }
-            catch
-            {
-                MessageBox.Show("Students Table Doesn't Exist!");
-            }
-            
+            AmmountWindow amw = new AmmountWindow("student");
+            amw.ShowDialog();
         }
 
         private void GenerateVisitationsButton_Click(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                AmmountWindow amw = new AmmountWindow("visitation");
-                amw.ShowDialog();
-            }
-            catch
-            {
-                MessageBox.Show("Visitations Table Doesn't Exist!");
-            }
-            
+            AmmountWindow amw = new AmmountWindow("visitation");
+            amw.ShowDialog();
         }
 
         private void AddStudentButton_Click(object sender, RoutedEventArgs e)

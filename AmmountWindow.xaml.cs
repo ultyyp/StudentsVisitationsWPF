@@ -43,25 +43,25 @@ namespace StudentsVisitationsWPF
                 int ammount = int.Parse(AmmountTextBox.Text);
                 if (type == "student")
                 {
-                    if (ammount > 0 && DBMethods.StudentTableExists() == true)
+                    if (ammount > 0) //DBMethods.StudentTableExists() == true
                     {
                         DBMethods.GenerateStudents(ammount);
                     }
                     else
                     {
-                        MessageBox.Show("Table Doesn't Exist!");
+                        MessageBox.Show("Enter Valid Ammount!");
                     }
                     this.Close();
                 }
                 else if (type == "visitation")
                 {
-                    if (ammount > 0 && DBMethods.VisitationTableExists() == true)
+                    if (ammount > 0) //DBMethods.VisitationTableExists() == true
                     {
                         DBMethods.GenerateVisitations(ammount);
                     }
                     else
                     {
-                        MessageBox.Show("Table Doesn't Exist!");
+                        MessageBox.Show("Enter Valid Ammount!");
                     }
                     this.Close();
                 }

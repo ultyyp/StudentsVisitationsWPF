@@ -8,15 +8,13 @@
         Title="MainWindow" Height="450" Width="800">
     <Grid>
         <DataGrid Name="InfoGrid" Margin="10,10,10,169" SelectionMode="Single"/>
-        <Button Name="ShowStudentsButton" Content="Show Students" HorizontalAlignment="Left" Margin="110,270,0,0" VerticalAlignment="Top" Height="45" Width="95" Click="ShowStudentsButton_Click"/>
-        <Button Name="ShowVisitationsButton" Content="Show Visitations" HorizontalAlignment="Left" Margin="210,270,0,0" VerticalAlignment="Top" Height="45" Width="95" Click="ShowVisitationsButton_Click"/>
-        <Button x:Name="CreateTablesButton" Content="Create Tables" HorizontalAlignment="Left" Margin="10,270,0,0" VerticalAlignment="Top" Height="45" Width="95" Click="CreateTablesButton_Click"/>
-        <Button x:Name="DropTablesButton" Content="Drop Tables" HorizontalAlignment="Left" Margin="10,320,0,0" VerticalAlignment="Top" Height="45" Width="95" Click="DropTablesButton_Click"/>
-        <Button x:Name="AddStudentButton" Content="Add Student" HorizontalAlignment="Left" Margin="110,320,0,0" VerticalAlignment="Top" Height="45" Width="95" Click="AddStudentButton_Click"/>
-        <Button x:Name="AddVisitationButton" Content="Add Visitation" HorizontalAlignment="Left" Margin="210,320,0,0" VerticalAlignment="Top" Height="45" Width="95" Click="AddVisitationButton_Click"/>
-        <Button x:Name="GenerateStudentsButton" Content="Generate Students" HorizontalAlignment="Left" Margin="110,370,0,0" VerticalAlignment="Top" Height="45" Width="95" FontSize="10" Click="GenerateStudentsButton_Click"/>
-        <Button x:Name="GenerateVisitationsButton" Content="Generate Visitations" HorizontalAlignment="Left" Margin="210,371,0,0" VerticalAlignment="Top" Height="45" Width="95" FontSize="10" Click="GenerateVisitationsButton_Click"/>
-        <Button x:Name="SearchVisitationButton" Content="Search Visitations" HorizontalAlignment="Left" Margin="10,371,0,0" VerticalAlignment="Top" Height="45" Width="95" FontSize="10" Click="SearchVisitationButton_Click"/>
+        <Button Name="ShowStudentsButton" Content="Show Students" HorizontalAlignment="Left" Margin="10,270,0,0" VerticalAlignment="Top" Height="45" Width="95" Click="ShowStudentsButton_Click"/>
+        <Button Name="ShowVisitationsButton" Content="Show Visitations" HorizontalAlignment="Left" Margin="110,270,0,0" VerticalAlignment="Top" Height="45" Width="95" Click="ShowVisitationsButton_Click"/>
+        <Button x:Name="AddStudentButton" Content="Add Student" HorizontalAlignment="Left" Margin="10,320,0,0" VerticalAlignment="Top" Height="45" Width="95" Click="AddStudentButton_Click"/>
+        <Button x:Name="AddVisitationButton" Content="Add Visitation" HorizontalAlignment="Left" Margin="110,320,0,0" VerticalAlignment="Top" Height="45" Width="95" Click="AddVisitationButton_Click"/>
+        <Button x:Name="GenerateStudentsButton" Content="Generate Students" HorizontalAlignment="Left" Margin="10,370,0,0" VerticalAlignment="Top" Height="45" Width="95" FontSize="10" Click="GenerateStudentsButton_Click" RenderTransformOrigin="-0.365,0.383"/>
+        <Button x:Name="GenerateVisitationsButton" Content="Generate Visitations" HorizontalAlignment="Left" Margin="110,370,0,0" VerticalAlignment="Top" Height="45" Width="95" FontSize="10" Click="GenerateVisitationsButton_Click"/>
+        <Button x:Name="SearchVisitationButton" Content="Search Visitations" HorizontalAlignment="Left" Margin="210,320,0,0" VerticalAlignment="Top" Height="45" Width="95" FontSize="10" Click="SearchVisitationButton_Click"/>
 
     </Grid>
 </Window>

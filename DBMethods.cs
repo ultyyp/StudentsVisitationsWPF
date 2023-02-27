@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using Microsoft.EntityFrameworkCore.Design;
 
 namespace StudentsVisitationsWPF
 {
@@ -16,8 +17,8 @@ namespace StudentsVisitationsWPF
     {
         public class Visitation
         {
-            public int ID { get; set; }
-            public long STUDENTID { get; set; }
+            public Guid ID { get; set; }
+            public Guid STUDENTID { get; set; }
             public DateOnly DATE { get; set; }
 
             public override string ToString()
@@ -28,7 +29,7 @@ namespace StudentsVisitationsWPF
 
         public class Student
         {
-            public int ID { get; set; }
+            public Guid ID { get; set; }
             public string FIO { get; set; }
             public DateOnly DOB { get; set; }
 
@@ -42,7 +43,7 @@ namespace StudentsVisitationsWPF
 
         public class AppDbContext : DbContext
         {
-            private const string ConnectionString = "Data Source=mydatabase.db";
+            private const string ConnectionString = "Data Source=G:\\ITSTEP\\SP Projects\\WPF\\StudentsVisitationsWPF\\mydatabase.db";
 
             protected override void OnConfiguring(
                 DbContextOptionsBuilder optionsBuilder)
@@ -54,59 +55,60 @@ namespace StudentsVisitationsWPF
             public DbSet<Visitation> Visitations => Set<Visitation>();
         }
 
-        public static async void CreateTables()
-        {
-            try
-            {
-                await using (var db = new AppDbContext())
-                {
-                    await db.Database.ExecuteSqlRawAsync(@"CREATE TABLE Students
-                        (
-                        ID INTEGER PRIMARY KEY AUTOINCREMENT,
-                        FIO      TEXT        NOT NULL ,
-                        DOB     DATETIME    NOT NULL,
-                        EMAIL    TEXT        NOT NULL
-                        );"
-                    );
+
+        //public static async void CreateTables()
+        //{
+        //    try
+        //    {
+        //        await using (var db = new AppDbContext())
+        //        {
+        //            await db.Database.ExecuteSqlRawAsync(@"CREATE TABLE Students
+        //                (
+        //                ID TEXT PRIMARY KEY,
+        //                FIO      TEXT        NOT NULL ,
+        //                DOB     DATETIME    NOT NULL,
+        //                EMAIL    TEXT        NOT NULL
+        //                );"
+        //            );
 
 
-                    await db.Database.ExecuteSqlRawAsync(@"CREATE TABLE Visitations
-                        (
-                        ID INTEGER PRIMARY KEY AUTOINCREMENT,
-                        STUDENTID INTEGER    NOT NULL ,
-                        DATE     DATETIME    NOT NULL ,
-                        FOREIGN KEY(STUDENTID) REFERENCES Students(ID)
-                        ); "
-                    );
+        //            await db.Database.ExecuteSqlRawAsync(@"CREATE TABLE Visitations
+        //                (
+        //                ID TEXT PRIMARY,
+        //                STUDENTID INTEGER    NOT NULL ,
+        //                DATE     DATETIME    NOT NULL ,
+        //                FOREIGN KEY(STUDENTID) REFERENCES Students(ID)
+        //                ); "
+        //            );
 
-                    MessageBox.Show("Tables Created!");
+        //            MessageBox.Show("Tables Created!");
 
-                }
-            }
+        //        }
+        //    }
 
-            catch
-            {
-                MessageBox.Show("Tables Already Exist!");
-            }
-        }
+        //    catch
+        //    {
+        //        MessageBox.Show("Tables Already Exist!");
+        //    }
+        //}
 
-        public static async void DropTables()
-        {
-            try
-            {
-                await using (var db = new AppDbContext())
-                {
-                    await db.Database.ExecuteSqlRawAsync(@"DROP TABLE Visitations");
-                    await db.Database.ExecuteSqlRawAsync(@"DROP TABLE Students");
-                    MessageBox.Show("Tables Dropped!");
+        //public static async void DropTables()
+        //{
+        //    try
+        //    {
+        //        await using (var db = new AppDbContext())
+        //        {
+        //            await db.Database.ExecuteSqlRawAsync(@"DROP TABLE Visitations");
+        //            await db.Database.ExecuteSqlRawAsync(@"DROP TABLE Students");
+        //            MessageBox.Show("Tables Dropped!");
 
-                }
-            }
-            catch
-            {
-                MessageBox.Show("Tables Already Dropped!");
-            }
-        }
+        //        }
+        //    }
+        //    catch
+        //    {
+        //        MessageBox.Show("Tables Already Dropped!");
+        //    }
+        //}
 
         public static async Task<Visitation[]> GetVisitations()
         {
@@ -257,6 +259,7 @@ namespace StudentsVisitationsWPF
                 var randominfo = studentFaker.Generate();
                 Student student = new Student
                 {
+                    ID = Guid.NewGuid(),
                     FIO = randominfo.FIO,
                     DOB = new DateOnly(randomiser.Int(1970, 2022), randomiser.Int(1, 12), randomiser.Int(1, 29)),
                     EMAIL = randominfo.EMAIL
@@ -313,18 +316,20 @@ namespace StudentsVisitationsWPF
                 if (ammount == 0) { return; }
                 //Randomiser
                 var randomiser = new Bogus.Randomizer();
+                
                 //Students
                 var stu = await GetStudents();
 
                 //Generation
                 for (int i = 0; i < ammount; i++)
                 {
+                    var randomnum = randomiser.Int(1, GetStudentsCount().Result);
                     Visitation visitation = new Visitation
                     {
-                        STUDENTID = randomiser.Int(1, GetStudentsCount().Result),
+                        STUDENTID = stu[randomnum-1].ID,
                     };
-                    DateOnly bd = stu[visitation.STUDENTID - 1].DOB;
-                    visitation.DATE = new DateOnly(randomiser.Int(bd.Year + 1, 2023), randomiser.Int(bd.Month, 12), randomiser.Int(bd.Day, 29));
+                    DateOnly bd = stu[randomnum-1].DOB;
+                    visitation.DATE = new DateOnly(randomiser.Int(bd.Year - 1, 2022), randomiser.Int(bd.Month, 12), randomiser.Int(bd.Day, 29));
                     AddVisitation(visitation);
                 }
 
@@ -397,11 +402,7 @@ namespace StudentsVisitationsWPF
             col4.Binding = new Binding("EMAIL");
             ((MainWindow)Application.Current.MainWindow).InfoGrid.Columns.Add(col4);
 
-            var col5 = new DataGridCheckBoxColumn();
-            col5.Header = "PRESENT";
-            col5.IsReadOnly = false;
-            ((MainWindow)Application.Current.MainWindow).InfoGrid.Columns.Add(col5);
-
+            
         }
     }
 }
