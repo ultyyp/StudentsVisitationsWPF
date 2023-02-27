@@ -4,31 +4,31 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using StudentsVisitationsWPF.Entities;
+using StudentsVisitationsWPF;
 
 #nullable disable
 
 namespace StudentsVisitationsWPF.Migrations
 {
     [DbContext(typeof(DBMethods.AppDbContext))]
-    [Migration("20230227130303_MigrationName")]
-    partial class MigrationName
+    [Migration("20230227171850_StudentsForeignKey")]
+    partial class StudentsForeignKey
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.14");
 
-            modelBuilder.Entity("StudentsVisitationsWPF.DBMethods+Student", b =>
+            modelBuilder.Entity("StudentsVisitationsWPF.Entities.Student", b =>
                 {
-                    b.Property<Guid>("ID")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
                     b.Property<DateOnly>("DOB")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("EMAIL")
+                    b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
@@ -36,26 +36,37 @@ namespace StudentsVisitationsWPF.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.HasKey("ID");
+                    b.HasKey("Id");
 
                     b.ToTable("Students");
                 });
 
-            modelBuilder.Entity("StudentsVisitationsWPF.DBMethods+Visitation", b =>
+            modelBuilder.Entity("StudentsVisitationsWPF.Entities.Visitation", b =>
                 {
-                    b.Property<Guid>("ID")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
-                    b.Property<DateOnly>("DATE")
+                    b.Property<DateOnly>("Date")
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid>("STUDENTID")
+                    b.Property<Guid?>("StudentId")
                         .HasColumnType("TEXT");
 
-                    b.HasKey("ID");
+                    b.HasKey("Id");
+
+                    b.HasIndex("StudentId");
 
                     b.ToTable("Visitations");
+                });
+
+            modelBuilder.Entity("StudentsVisitationsWPF.Entities.Visitation", b =>
+                {
+                    b.HasOne("StudentsVisitationsWPF.Entities.Student", "Student")
+                        .WithMany()
+                        .HasForeignKey("StudentId");
+
+                    b.Navigation("Student");
                 });
 #pragma warning restore 612, 618
         }

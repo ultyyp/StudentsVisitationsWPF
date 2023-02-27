@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:StudentsVisitationsWPF"
         mc:Ignorable="d"
-        Title="SearchWindow" Height="114" Width="240">
+        Title="SearchWindow" Height="139" Width="276">
     <Grid>
         <DatePicker Name="DATEPICKER" HorizontalAlignment="Left" Margin="88,12,0,0" VerticalAlignment="Top"/>
         <Label Content="DATE:" HorizontalAlignment="Left" Margin="43,10,0,0" VerticalAlignment="Top"/>

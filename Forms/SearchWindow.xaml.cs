@@ -48,7 +48,7 @@ namespace StudentsVisitationsWPF
                     for (int i = visitations.ToList().Count - 1; i >= 0; i--)
                     {
                         //MessageBox.Show(donly.Year.ToString() + ":" + visitations[i].DATE.Year.ToString() + " " + donly.Month.ToString() + ":" + visitations[i].DATE.Month.ToString() + " " + donly.Day.ToString() + ":" + visitations[i].DATE.Day.ToString());
-                        if (visitations[i].DATE.Year == donly.Year && visitations[i].DATE.Month == donly.Month && visitations[i].DATE.Day == donly.Day)
+                        if (visitations[i].Date.Year == donly.Year && visitations[i].Date.Month == donly.Month && visitations[i].Date.Day == donly.Day)
                         {
                             ((MainWindow)Application.Current.MainWindow).InfoGrid.Items.Add(visitations[i]);
                         }

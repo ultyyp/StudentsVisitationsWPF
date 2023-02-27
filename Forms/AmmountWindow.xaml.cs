@@ -40,7 +40,23 @@ namespace StudentsVisitationsWPF
         {
             if (e.Key == Key.Enter)
             {
-                int ammount = int.Parse(AmmountTextBox.Text);
+                int ammount = 0;
+                try
+                {
+                     ammount = int.Parse(AmmountTextBox.Text);
+                }
+                catch 
+                {
+                    MessageBox.Show("Please enter a valid ammount!");
+                    return;
+                }
+
+                if(ammount <= 0) 
+                {
+                    MessageBox.Show("Please enter a valid ammount!");
+                    return;
+                }
+                
                 if (type == "student")
                 {
                     if (ammount > 0) //DBMethods.StudentTableExists() == true
@@ -58,6 +74,18 @@ namespace StudentsVisitationsWPF
                     if (ammount > 0) //DBMethods.VisitationTableExists() == true
                     {
                         DBMethods.GenerateVisitations(ammount);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Enter Valid Ammount!");
+                    }
+                    this.Close();
+                }
+                else if (type == "subject")
+                {
+                    if (ammount > 0) //DBMethods.VisitationTableExists() == true
+                    {
+                        DBMethods.GenerateSubjects(ammount);
                     }
                     else
                     {

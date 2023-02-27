@@ -19,6 +19,8 @@ using System.ComponentModel;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore.Design;
 using StudentsVisitationsWPF.Migrations;
+using StudentsVisitationsWPF.Forms;
+using StudentsVisitationsWPF.Entities;
 
 namespace StudentsVisitationsWPF
 {
@@ -32,6 +34,7 @@ namespace StudentsVisitationsWPF
         public MainWindow()
         {
             InitializeComponent();
+            InfoGrid.BeginningEdit += (s, ss) => ss.Cancel = true; //Fix for crashes
         }
 
         private void SearchVisitationButton_Click(object sender, RoutedEventArgs e)
@@ -52,6 +55,12 @@ namespace StudentsVisitationsWPF
             amw.ShowDialog();
         }
 
+        private void GenerateSubjectsButton_Click(object sender, RoutedEventArgs e)
+        {
+            AmmountWindow amw = new AmmountWindow("subject");
+            amw.ShowDialog();
+        }
+
         private void AddStudentButton_Click(object sender, RoutedEventArgs e)
         {
 
@@ -65,14 +74,20 @@ namespace StudentsVisitationsWPF
             av.ShowDialog();
         }
 
+        private void AddSubjectsButton_Click(object sender, RoutedEventArgs e)
+        {
+            AddSubjectWindow asw = new AddSubjectWindow();
+            asw.ShowDialog();
+        }
+
         private async void ShowStudentsButton_Click(object sender, RoutedEventArgs e)
         {
-            if(DBMethods.GetStudentsCount().Result ==0)
+            if(await DBMethods.GetStudentsCount() ==0)
             {
                 MessageBox.Show("Students Table Is Empty!");
                 return;
             }
-            else if(DBMethods.GetStudentsCount().Result >= 1)
+            else if(await DBMethods.GetStudentsCount() >= 1)
             {
                 var students = await DBMethods.GetStudents();
                 DBMethods.CreateStudentColumns();
@@ -91,12 +106,12 @@ namespace StudentsVisitationsWPF
 
         private async void ShowVisitationsButton_Click(object sender, RoutedEventArgs e)
         {
-            if(DBMethods.GetVisitationsCount().Result ==0)
+            if(await DBMethods.GetVisitationsCount() == 0)
             {
                 MessageBox.Show("Visitations Table Is Empty!");
                 return;
             }
-            else if (DBMethods.GetVisitationsCount().Result >= 1)
+            else if (await DBMethods.GetVisitationsCount() >= 1)
             {
                 var visitations = await DBMethods.GetVisitations();
                 DBMethods.CreateVisitationColumns();
@@ -113,6 +128,30 @@ namespace StudentsVisitationsWPF
             }
         }
 
+        private async void ShowSubjectsButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (await DBMethods.GetSubjectsCount() == 0)
+            {
+                MessageBox.Show("Subjects Table Is Empty!");
+                return;
+            }
+            else if (await DBMethods.GetSubjectsCount() >= 1)
+            {
+                var subjects = await DBMethods.GetSubjects();
+                DBMethods.CreateSubjectColumns();
+                DBMethods.ClearItems();
+
+                foreach (var subject in subjects)
+                {
+                    InfoGrid.Items.Add(subject);
+                }
+            }
+            else
+            {
+                MessageBox.Show("Subjects Table Doesn't Exist!");
+            }
+        }
+
         private void ClearStudents_Click(object sender, RoutedEventArgs e)
         {
             DBMethods.ClearStudents();
@@ -121,6 +160,11 @@ namespace StudentsVisitationsWPF
         private void ClearVisitations_Click(object sender, RoutedEventArgs e)
         {
             DBMethods.ClearVisitations();
+        }
+
+        private void ClearSubjectsButton_Click(object sender, RoutedEventArgs e)
+        {
+            DBMethods.ClearSubjects(); 
         }
     }
 }

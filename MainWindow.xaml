@@ -5,18 +5,22 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:StudentsVisitationsWPF"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="461" Width="800">
     <Grid>
-        <DataGrid Name="InfoGrid" Margin="10,10,10,169" SelectionMode="Single"/>
+        <DataGrid Name="InfoGrid" Margin="10,10,10,180" SelectionMode="Single" />
         <Button Name="ShowStudentsButton" Content="Show Students" HorizontalAlignment="Left" Margin="10,270,0,0" VerticalAlignment="Top" Height="45" Width="95" Click="ShowStudentsButton_Click"/>
-        <Button Name="ShowVisitationsButton" Content="Show Visitations" HorizontalAlignment="Left" Margin="110,270,0,0" VerticalAlignment="Top" Height="45" Width="95" Click="ShowVisitationsButton_Click"/>
-        <Button x:Name="AddStudentButton" Content="Add Student" HorizontalAlignment="Left" Margin="10,320,0,0" VerticalAlignment="Top" Height="45" Width="95" Click="AddStudentButton_Click"/>
-        <Button x:Name="AddVisitationButton" Content="Add Visitation" HorizontalAlignment="Left" Margin="110,320,0,0" VerticalAlignment="Top" Height="45" Width="95" Click="AddVisitationButton_Click"/>
-        <Button x:Name="GenerateStudentsButton" Content="Generate Students" HorizontalAlignment="Left" Margin="10,370,0,0" VerticalAlignment="Top" Height="45" Width="95" FontSize="10" Click="GenerateStudentsButton_Click" RenderTransformOrigin="-0.365,0.383"/>
-        <Button x:Name="GenerateVisitationsButton" Content="Generate Visitations" HorizontalAlignment="Left" Margin="110,370,0,0" VerticalAlignment="Top" Height="45" Width="95" FontSize="10" Click="GenerateVisitationsButton_Click"/>
-        <Button x:Name="SearchVisitationButton" Content="Search Visitations" HorizontalAlignment="Left" Margin="210,370,0,0" VerticalAlignment="Top" Height="45" Width="95" FontSize="10" Click="SearchVisitationButton_Click"/>
-        <Button x:Name="ClearVisitations" Content="Clear Visitations" HorizontalAlignment="Left" Margin="210,320,0,0" VerticalAlignment="Top" Height="45" Width="95" FontSize="10" Click="ClearVisitations_Click" />
-        <Button x:Name="ClearStudents" Content="Clear Students" HorizontalAlignment="Left" Margin="210,270,0,0" VerticalAlignment="Top" Height="45" Width="95" FontSize="10" Click="ClearStudents_Click" />
+        <Button Name="ShowVisitationsButton" Content="Show Visitations" HorizontalAlignment="Left" Margin="10,370,0,0" VerticalAlignment="Top" Height="45" Width="95" Click="ShowVisitationsButton_Click" RenderTransformOrigin="-0.151,1.532"/>
+        <Button x:Name="AddStudentButton" Content="Add Student" HorizontalAlignment="Left" Margin="110,270,0,0" VerticalAlignment="Top" Height="45" Width="95" Click="AddStudentButton_Click"/>
+        <Button x:Name="AddVisitationButton" Content="Add Visitation" HorizontalAlignment="Left" Margin="110,371,0,0" VerticalAlignment="Top" Height="45" Width="95" Click="AddVisitationButton_Click"/>
+        <Button x:Name="GenerateStudentsButton" Content="Generate Students" HorizontalAlignment="Left" Margin="210,270,0,0" VerticalAlignment="Top" Height="45" Width="95" FontSize="10" Click="GenerateStudentsButton_Click" RenderTransformOrigin="-0.365,0.383"/>
+        <Button x:Name="GenerateVisitationsButton" Content="Generate Visitations" HorizontalAlignment="Left" Margin="210,370,0,0" VerticalAlignment="Top" Height="45" Width="95" FontSize="10" Click="GenerateVisitationsButton_Click" RenderTransformOrigin="1.681,-1.25"/>
+        <Button x:Name="SearchVisitationButton" Content="Search Visitations" HorizontalAlignment="Left" Margin="410,370,0,0" VerticalAlignment="Top" Height="45" Width="95" FontSize="10" Click="SearchVisitationButton_Click"/>
+        <Button x:Name="ClearVisitations" Content="Clear Visitations" HorizontalAlignment="Left" Margin="310,370,0,0" VerticalAlignment="Top" Height="45" Width="95" FontSize="10" Click="ClearVisitations_Click" />
+        <Button x:Name="ClearStudents" Content="Clear Students" HorizontalAlignment="Left" Margin="310,270,0,0" VerticalAlignment="Top" Height="45" Width="95" FontSize="10" Click="ClearStudents_Click" />
+        <Button x:Name="ShowSubjectsButton" Content="Show Subjects" HorizontalAlignment="Left" Margin="10,320,0,0" VerticalAlignment="Top" Height="45" Width="95" Click="ShowSubjectsButton_Click" />
+        <Button x:Name="AddSubjectsButton" Content="Add Subject" HorizontalAlignment="Left" Margin="110,320,0,0" VerticalAlignment="Top" Height="45" Width="95" RenderTransformOrigin="0.532,0.976" Click="AddSubjectsButton_Click"/>
+        <Button x:Name="GenerateSubjectsButton" Content="Generate Subjects" HorizontalAlignment="Left" Margin="210,320,0,0" VerticalAlignment="Top" Height="45" Width="95" FontSize="10" RenderTransformOrigin="-0.365,0.383" Click="GenerateSubjectsButton_Click"/>
+        <Button x:Name="ClearSubjectsButton" Content="Clear Subjects" HorizontalAlignment="Left" Margin="310,320,0,0" VerticalAlignment="Top" Height="45" Width="95" FontSize="10" Click="ClearSubjectsButton_Click" />
 
     </Grid>
 </Window>

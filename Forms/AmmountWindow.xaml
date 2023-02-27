@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:StudentsVisitationsWPF"
         mc:Ignorable="d"
-        Title="" Height="100" Width="200">
+        Title="" Height="102" Width="207">
     <Grid>
         <TextBox Name="AmmountTextBox" HorizontalAlignment="Left" TextWrapping="Wrap" Text="" VerticalAlignment="Center" Width="61" Margin="108,0,0,0"  KeyDown="OnKeyDownHandler"/>
 

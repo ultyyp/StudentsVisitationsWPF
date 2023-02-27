@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using StudentsVisitationsWPF.Entities;
 
 namespace StudentsVisitationsWPF
 {
@@ -26,12 +27,30 @@ namespace StudentsVisitationsWPF
 
         private void AddButton_Click(object sender, RoutedEventArgs e)
         {
-            DBMethods.Student st = new DBMethods.Student();
-            st.ID = Guid.NewGuid();
+            Student st = new Student();
+            st.Id = Guid.NewGuid();
             st.FIO = FIOTextBox.Text.Trim();
+            if(st.FIO.Length <= 0 )
+            {
+                MessageBox.Show("Please enter a valid name!");
+                return;
+            }
+
+            if(DOBDatePicker.SelectedDate.HasValue==false)
+            {
+                MessageBox.Show("Please select a date!");
+                return;
+            }
             DateTime dt = DOBDatePicker.SelectedDate.Value;
             st.DOB = new DateOnly(dt.Year, dt.Month, dt.Day);
-            st.EMAIL = EMAILTextBox.Text.Trim();
+
+
+            st.Email = EMAILTextBox.Text.Trim();
+            if (st.Email.Length <= 0)
+            {
+                MessageBox.Show("Please enter a valid email!");
+                return;
+            }
             DBMethods.AddStudent(st);
             MessageBox.Show("Student Added!");
             this.Close();
