@@ -416,7 +416,7 @@ namespace StudentsVisitationsWPF
                 }
                 db.SaveChanges();
                 MessageBox.Show("Students Cleared!");
-                ClearItems();
+                ClearItems(((MainWindow)Application.Current.MainWindow).StudentsInfoGrid);
             }
             catch (Exception ex)
             {
@@ -433,7 +433,7 @@ namespace StudentsVisitationsWPF
             }
             db.SaveChanges();
             MessageBox.Show("Visitations Cleared!");
-            ClearItems();
+            ClearItems(((MainWindow)Application.Current.MainWindow).VisitationsInfoGrid);
         }
 
         public static async void ClearSubjects()
@@ -446,7 +446,7 @@ namespace StudentsVisitationsWPF
                 }
                 db.SaveChanges();
                 MessageBox.Show("Subjects Cleared!");
-                ClearItems();
+                ClearItems(((MainWindow)Application.Current.MainWindow).SubjectsInfoGrid);
             }
             catch(Exception ex) 
             {
@@ -465,7 +465,7 @@ namespace StudentsVisitationsWPF
                 }
                 db.SaveChanges();
                 MessageBox.Show("Groups Cleared!");
-                ClearItems();
+                ClearItems(((MainWindow)Application.Current.MainWindow).GroupsInfoGrid);
             }
             catch (Exception ex)
             {
@@ -474,147 +474,120 @@ namespace StudentsVisitationsWPF
 
         }
 
-        public static void ClearColumns()
+        public static void ClearColumns(DataGrid dataGrid)
         {
-            for (int i = ((MainWindow)Application.Current.MainWindow).InfoGrid.Columns.Count - 1; i >= 0; i--)
+            for (int i = dataGrid.Columns.Count - 1; i >= 0; i--)
             {
-                ((MainWindow)Application.Current.MainWindow).InfoGrid.Columns.Remove(((MainWindow)Application.Current.MainWindow).InfoGrid.Columns[i]);
+                dataGrid.Columns.Remove(dataGrid.Columns[i]);
             }
 
-            for (int i = ((MainWindow)Application.Current.MainWindow).InfoGrid.Items.Count - 1; i >= 0; i--)
-            {
-                ((MainWindow)Application.Current.MainWindow).InfoGrid.Items.Remove(((MainWindow)Application.Current.MainWindow).InfoGrid.Items[i]);
-            }
         }
 
-        public static void ClearItems()
+        public static void ClearItems(DataGrid dataGrid)
         {
-            for (int i = ((MainWindow)Application.Current.MainWindow).InfoGrid.Items.Count - 1; i >= 0; i--)
+            for (int i = dataGrid.Items.Count - 1; i >= 0; i--)
             {
-                ((MainWindow)Application.Current.MainWindow).InfoGrid.Items.Remove(((MainWindow)Application.Current.MainWindow).InfoGrid.Items[i]);
+                dataGrid.Items.Remove(dataGrid.Items[i]);
             }
         }
 
-        public static void AddBindingStudent(ObservableCollection<Student> oc)
-        {
-            ((MainWindow)Application.Current.MainWindow).InfoGrid.ItemsSource = oc;
-        }
-
-        public static void AddBindingVisitations(ObservableCollection<Visitation> oc)
-        {
-            ((MainWindow)Application.Current.MainWindow).InfoGrid.ItemsSource = oc;
-        }
+        
 
         public static void CreateVisitationColumns()
         {
-            ClearColumns();
-
-            var col1 = new DataGridTextColumn();
-            col1.Header = "Id";
-            col1.Binding = new Binding("Id");
-            col1.IsReadOnly = false;
-            
-            ((MainWindow)Application.Current.MainWindow).InfoGrid.Columns.Add(col1);
+            ClearColumns(((MainWindow)Application.Current.MainWindow).VisitationsInfoGrid);
+            ClearItems(((MainWindow)Application.Current.MainWindow).VisitationsInfoGrid);
 
             var col2 = new DataGridTextColumn();
             col2.Header = "Student";
             col2.Binding = new Binding("Student");
             col2.IsReadOnly = false;
-            ((MainWindow)Application.Current.MainWindow).InfoGrid.Columns.Add(col2);
+            ((MainWindow)Application.Current.MainWindow).VisitationsInfoGrid.Columns.Add(col2);
 
             var col3 = new DataGridTextColumn();
             col3.Header = "Subject";
             col3.Binding = new Binding("Subject");
             col3.IsReadOnly = false;
-            ((MainWindow)Application.Current.MainWindow).InfoGrid.Columns.Add(col3);
+            ((MainWindow)Application.Current.MainWindow).VisitationsInfoGrid.Columns.Add(col3);
 
             var col4 = new DataGridTextColumn();
             col4.Header = "Date";
             col4.Binding = new Binding("Date");
+            col4.Binding.StringFormat = "dd/MM/yyyy";
             col4.IsReadOnly = false;
-            ((MainWindow)Application.Current.MainWindow).InfoGrid.Columns.Add(col4);
+            ((MainWindow)Application.Current.MainWindow).VisitationsInfoGrid.Columns.Add(col4);
         }
         public static void CreateSubjectColumns()
         {
-            ClearColumns();
+            ClearColumns(((MainWindow)Application.Current.MainWindow).SubjectsInfoGrid);
 
             var col1 = new DataGridTextColumn();
             col1.Header = "Id";
             col1.Binding = new Binding("Id");
             col1.IsReadOnly = false;
-            ((MainWindow)Application.Current.MainWindow).InfoGrid.Columns.Add(col1);
+            ((MainWindow)Application.Current.MainWindow).SubjectsInfoGrid.Columns.Add(col1);
 
             var col2 = new DataGridTextColumn();
             col2.Header = "Name";
             col2.Binding = new Binding("Name");
             col2.IsReadOnly = false;
-            ((MainWindow)Application.Current.MainWindow).InfoGrid.Columns.Add(col2);
+            ((MainWindow)Application.Current.MainWindow).SubjectsInfoGrid.Columns.Add(col2);
         }
 
         public static void CreateStudentColumns()
         {
-            ClearColumns();
-
-            var col1 = new DataGridTextColumn();
-            col1.Header = "Id";
-            col1.Binding = new Binding("Id");
-            col1.IsReadOnly = false;
-            ((MainWindow)Application.Current.MainWindow).InfoGrid.Columns.Add(col1);
+            ClearColumns(((MainWindow)Application.Current.MainWindow).StudentsInfoGrid);
 
             var col2 = new DataGridTextColumn();
             col2.Header = "FIO";
             col2.Binding = new Binding("FIO");
             col2.IsReadOnly = false;
-            ((MainWindow)Application.Current.MainWindow).InfoGrid.Columns.Add(col2);
+            ((MainWindow)Application.Current.MainWindow).StudentsInfoGrid.Columns.Add(col2);
 
             var col3 = new DataGridTextColumn();
             col3.Header = "DOB";
             col3.Binding = new Binding("DOB");
+            col3.Binding.StringFormat = "dd/MM/yyyy";
             col3.IsReadOnly = false;
-            ((MainWindow)Application.Current.MainWindow).InfoGrid.Columns.Add(col3);
+            ((MainWindow)Application.Current.MainWindow).StudentsInfoGrid.Columns.Add(col3);
 
             var col4 = new DataGridTextColumn();
             col4.Header = "Email";
             col4.Binding = new Binding("Email");
             col4.IsReadOnly = false;
-            ((MainWindow)Application.Current.MainWindow).InfoGrid.Columns.Add(col4);
+            ((MainWindow)Application.Current.MainWindow).StudentsInfoGrid.Columns.Add(col4);
 
             var col5 = new DataGridTextColumn();
             col5.Header = "Group";
             col5.Binding = new Binding("Group");
             col5.IsReadOnly = false;
-            ((MainWindow)Application.Current.MainWindow).InfoGrid.Columns.Add(col5);
+            ((MainWindow)Application.Current.MainWindow).StudentsInfoGrid.Columns.Add(col5);
 
 
         }
 
         public static void CreateGroupsColumns()
         {
-            ClearColumns();
-
-            var col1 = new DataGridTextColumn();
-            col1.Header = "Id";
-            col1.Binding = new Binding("Id");
-            col1.IsReadOnly = false;
-            ((MainWindow)Application.Current.MainWindow).InfoGrid.Columns.Add(col1);
+            ClearColumns(((MainWindow)Application.Current.MainWindow).GroupsInfoGrid);
 
             var col2 = new DataGridTextColumn();
             col2.Header = "Name";
             col2.Binding = new Binding("Name");
             col2.IsReadOnly = false;
-            ((MainWindow)Application.Current.MainWindow).InfoGrid.Columns.Add(col2);
+            ((MainWindow)Application.Current.MainWindow).GroupsInfoGrid.Columns.Add(col2);
 
             var col3 = new DataGridTextColumn();
             col3.Header = "Creation Date";
             col3.Binding = new Binding("CreationDate");
+            col3.Binding.StringFormat = "dd/MM/yyyy";
             col3.IsReadOnly = false;
-            ((MainWindow)Application.Current.MainWindow).InfoGrid.Columns.Add(col3);
+            ((MainWindow)Application.Current.MainWindow).GroupsInfoGrid.Columns.Add(col3);
 
             var col4 = new DataGridTextColumn();
             col4.Header = "Students Count";
             col4.Binding = new Binding("StudentCount");
             col4.IsReadOnly = false;
-            ((MainWindow)Application.Current.MainWindow).InfoGrid.Columns.Add(col4);
+            ((MainWindow)Application.Current.MainWindow).GroupsInfoGrid.Columns.Add(col4);
 
         }
 

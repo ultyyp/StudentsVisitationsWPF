@@ -50,12 +50,13 @@ namespace StudentsVisitationsWPF.Forms
                     return; 
                 }
 
-                DBMethods.ClearColumns();
+                DBMethods.ClearColumns(((MainWindow)Application.Current.MainWindow).StudentsInfoGrid);
+                DBMethods.ClearItems(((MainWindow)Application.Current.MainWindow).StudentsInfoGrid);
                 DBMethods.CreateStudentColumns();
 
                 foreach (var stu in students)
                 {
-                    ((MainWindow)Application.Current.MainWindow).InfoGrid.Items.Add(stu);
+                    ((MainWindow)Application.Current.MainWindow).StudentsInfoGrid.Items.Add(stu);
                 }
 
                 MessageBox.Show("Search Done!");

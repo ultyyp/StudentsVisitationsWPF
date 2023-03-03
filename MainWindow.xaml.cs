@@ -21,6 +21,7 @@ using Microsoft.EntityFrameworkCore.Design;
 using StudentsVisitationsWPF.Migrations;
 using StudentsVisitationsWPF.Forms;
 using StudentsVisitationsWPF.Entities;
+using System.Windows.Markup;
 
 namespace StudentsVisitationsWPF
 {
@@ -34,7 +35,19 @@ namespace StudentsVisitationsWPF
         public MainWindow()
         {
             InitializeComponent();
-            InfoGrid.BeginningEdit += (s, ss) => ss.Cancel = true; //Fix for crashes
+            Language = XmlLanguage.GetLanguage("en-UK");
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            StudentsInfoGrid.BeginningEdit += (s, ss) => ss.Cancel = true; //Fix for crashes
+            SubjectsInfoGrid.BeginningEdit += (s, ss) => ss.Cancel = true;
+            VisitationsInfoGrid.BeginningEdit += (s, ss) => ss.Cancel = true;
+            GroupsInfoGrid.BeginningEdit += (s, ss) => ss.Cancel = true;
+            DBMethods.CreateStudentColumns();
+            DBMethods.CreateGroupsColumns();
+            DBMethods.CreateSubjectColumns();
+            DBMethods.CreateVisitationColumns();
         }
 
         private void SearchVisitationButton_Click(object sender, RoutedEventArgs e)
@@ -103,12 +116,11 @@ namespace StudentsVisitationsWPF
             {
                 var students = await DBMethods.GetStudents();
                 
-                DBMethods.CreateStudentColumns();
-                DBMethods.ClearItems();
+                DBMethods.ClearItems(StudentsInfoGrid);
 
                 foreach (var student in students)
                 {
-                    InfoGrid.Items.Add(student);
+                    StudentsInfoGrid.Items.Add(student);
                 }
             }
             else
@@ -128,11 +140,11 @@ namespace StudentsVisitationsWPF
             {
                 var visitations = await DBMethods.GetVisitations();
                 DBMethods.CreateVisitationColumns();
-                DBMethods.ClearItems();
+                DBMethods.ClearItems(VisitationsInfoGrid);
 
                 foreach (var visit in visitations)
                 {
-                    InfoGrid.Items.Add(visit);
+                    VisitationsInfoGrid.Items.Add(visit);
                 }
             }
             else
@@ -152,11 +164,11 @@ namespace StudentsVisitationsWPF
             {
                 var subjects = await DBMethods.GetSubjects();
                 DBMethods.CreateSubjectColumns();
-                DBMethods.ClearItems();
+                DBMethods.ClearItems(SubjectsInfoGrid);
 
                 foreach (var subject in subjects)
                 {
-                    InfoGrid.Items.Add(subject);
+                    SubjectsInfoGrid.Items.Add(subject);
                 }
             }
             else
@@ -176,11 +188,11 @@ namespace StudentsVisitationsWPF
             {
                 var groups = await DBMethods.GetGroups();
                 DBMethods.CreateGroupsColumns();
-                DBMethods.ClearItems();
+                DBMethods.ClearItems(GroupsInfoGrid);
 
                 foreach (var group in groups)
                 {
-                    InfoGrid.Items.Add(group);
+                    GroupsInfoGrid.Items.Add(group);
                 }
             }
             else
@@ -200,11 +212,11 @@ namespace StudentsVisitationsWPF
             {
                 var groups = await DBMethods.GetNonEmptyGroups();
                 DBMethods.CreateGroupsColumns();
-                DBMethods.ClearItems();
+                DBMethods.ClearItems(GroupsInfoGrid);
 
                 foreach (var group in groups)
                 {
-                    InfoGrid.Items.Add(group);
+                    GroupsInfoGrid.Items.Add(group);
                 }
             }
             else
@@ -238,6 +250,8 @@ namespace StudentsVisitationsWPF
             MonthYearWindow myw = new MonthYearWindow();
             myw.ShowDialog();
         }
+
+        
     }
 }
 

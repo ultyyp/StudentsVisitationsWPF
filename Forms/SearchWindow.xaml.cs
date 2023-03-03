@@ -43,17 +43,17 @@ namespace StudentsVisitationsWPF
                     DateOnly donly = new DateOnly(dt.Year, dt.Month, dt.Day);
 
                     DBMethods.CreateVisitationColumns();
-                    DBMethods.ClearItems();
+                    DBMethods.ClearItems(((MainWindow)Application.Current.MainWindow).VisitationsInfoGrid);
 
                     for (int i = visitations.ToList().Count - 1; i >= 0; i--)
                     {
                         //MessageBox.Show(donly.Year.ToString() + ":" + visitations[i].DATE.Year.ToString() + " " + donly.Month.ToString() + ":" + visitations[i].DATE.Month.ToString() + " " + donly.Day.ToString() + ":" + visitations[i].DATE.Day.ToString());
                         if (visitations[i].Date.Year == donly.Year && visitations[i].Date.Month == donly.Month && visitations[i].Date.Day == donly.Day)
                         {
-                            ((MainWindow)Application.Current.MainWindow).InfoGrid.Items.Add(visitations[i]);
+                            ((MainWindow)Application.Current.MainWindow).VisitationsInfoGrid.Items.Add(visitations[i]);
                         }
                     }
-                    if(((MainWindow)Application.Current.MainWindow).InfoGrid.Items.Count==0)
+                    if(((MainWindow)Application.Current.MainWindow).VisitationsInfoGrid.Items.Count==0)
                     {
                         MessageBox.Show("No visitations for that day found!");
                     }
