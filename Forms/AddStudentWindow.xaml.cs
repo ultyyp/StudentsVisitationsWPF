@@ -44,6 +44,16 @@ namespace StudentsVisitationsWPF
                 return;
             }
 
+            var students = await DBMethods.GetStudents();
+            foreach( var student in students )
+            {
+                if(student.FIO.Trim() == st.FIO.Trim() )
+                {
+                    MessageBox.Show("Student with that name already exists!");
+                    return;
+                }
+            }
+
             if(DOBDatePicker.SelectedDate.HasValue==false)
             {
                 MessageBox.Show("Please select a date!");
