@@ -11,7 +11,13 @@
         <Label Content="Student:" HorizontalAlignment="Left" Margin="10,23,0,0" VerticalAlignment="Top"/>
         <DatePicker Name="DATEDatePicker" HorizontalAlignment="Left" Margin="50,82,0,0" VerticalAlignment="Top"/>
         <Label Content="Date:" HorizontalAlignment="Left" Margin="10,80,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.971,0.911"/>
-        <Button Name="AddButton" Content="Add Visit" HorizontalAlignment="Left" Margin="167,82,0,0" VerticalAlignment="Top" Height="44" Width="92" Click="AddButton_Click"/>
+        <Button Name="AddButton" Content="Add Visit" HorizontalAlignment="Left" Margin="167,82,0,0" VerticalAlignment="Top" Height="44" Width="92" Click="AddButton_Click">
+            <Button.Resources>
+                <Style TargetType="Border">
+                    <Setter Property="CornerRadius" Value="5"/>
+                </Style>
+            </Button.Resources>
+        </Button>
         <ComboBox Name="ComboBox" HorizontalAlignment="Left" Margin="64,25,0,0" VerticalAlignment="Top" Width="120" />
         <Label Content="Subject:" HorizontalAlignment="Left" Margin="10,49,0,0" VerticalAlignment="Top"/>
         <ComboBox x:Name="SubjectComboBox" HorizontalAlignment="Left" Margin="64,51,0,0" VerticalAlignment="Top" Width="120" />
