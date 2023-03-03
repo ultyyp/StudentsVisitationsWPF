@@ -55,22 +55,21 @@ namespace StudentsVisitationsWPF
 
         }
 
-        public static async Task<Visitation[]> GetVisitationsMonthYear(int month, int year)
+        public static async Task<Student[]> GetStudentMonthYear(int month, int year)
         {
             try
             {
-                
-                return await db.Visitations
-                    .Include(visit => visit.Student)
-                    .Include(visit => visit.Subject)
-                    .Where(visit=>visit.Date.Month == month)
-                    .Where(visit=>visit.Date.Year == year).ToArrayAsync();
+                return await db.Students
+                          .Include(stu=>stu.Visitations)
+                          .Include(stu=>stu.Group)
+                          .Where(stu => stu.Visitations.Where(v => v.Date.Month == month && v.Date.Year == year).Any())
+                          .ToArrayAsync();
             }
             catch
             {
-                MessageBox.Show("Visitations Table Doesn't Exist!");
+                MessageBox.Show("Students Table Doesn't Exist!");
             }
-            return Array.Empty<Visitation>();
+            return Array.Empty<Student>();
 
         }
 
@@ -480,6 +479,11 @@ namespace StudentsVisitationsWPF
             for (int i = ((MainWindow)Application.Current.MainWindow).InfoGrid.Columns.Count - 1; i >= 0; i--)
             {
                 ((MainWindow)Application.Current.MainWindow).InfoGrid.Columns.Remove(((MainWindow)Application.Current.MainWindow).InfoGrid.Columns[i]);
+            }
+
+            for (int i = ((MainWindow)Application.Current.MainWindow).InfoGrid.Items.Count - 1; i >= 0; i--)
+            {
+                ((MainWindow)Application.Current.MainWindow).InfoGrid.Items.Remove(((MainWindow)Application.Current.MainWindow).InfoGrid.Items[i]);
             }
         }
 

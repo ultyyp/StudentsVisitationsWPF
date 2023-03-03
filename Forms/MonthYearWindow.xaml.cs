@@ -41,21 +41,21 @@ namespace StudentsVisitationsWPF.Forms
             {
                 
                 DateOnly donly = new DateOnly(int.Parse(YearTextBox.Text),int.Parse(MonthTextBox.Text), 1);
-                var visits = await DBMethods.GetVisitationsMonthYear(donly.Month, donly.Year);
+                var students = await DBMethods.GetStudentMonthYear(donly.Month, donly.Year);
                 
 
-                if(visits.Count() == 0) 
+                if(students.Count() == 0) 
                 { 
-                    MessageBox.Show("No Visitations with that date found!"); 
+                    MessageBox.Show("No Students with that date visit found!"); 
                     return; 
                 }
 
                 DBMethods.ClearColumns();
-                DBMethods.CreateVisitationColumns();
+                DBMethods.CreateStudentColumns();
 
-                foreach (var visit in visits)
+                foreach (var stu in students)
                 {
-                    ((MainWindow)Application.Current.MainWindow).InfoGrid.Items.Add(visit);
+                    ((MainWindow)Application.Current.MainWindow).InfoGrid.Items.Add(stu);
                 }
 
                 MessageBox.Show("Search Done!");
