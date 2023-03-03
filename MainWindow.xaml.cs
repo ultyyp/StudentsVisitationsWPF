@@ -22,6 +22,7 @@ using StudentsVisitationsWPF.Migrations;
 using StudentsVisitationsWPF.Forms;
 using StudentsVisitationsWPF.Entities;
 using System.Windows.Markup;
+using System.Windows.Controls.Primitives;
 
 namespace StudentsVisitationsWPF
 {
@@ -36,6 +37,7 @@ namespace StudentsVisitationsWPF
         {
             InitializeComponent();
             Language = XmlLanguage.GetLanguage("en-UK");
+            
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -105,124 +107,29 @@ namespace StudentsVisitationsWPF
             asw.ShowDialog();
         }
 
-        private async void ShowStudentsButton_Click(object sender, RoutedEventArgs e)
+        private void ShowStudentsButton_Click(object sender, RoutedEventArgs e)
         {
-            if(await DBMethods.GetStudentsCount() ==0)
-            {
-                MessageBox.Show("Students Table Is Empty!");
-                return;
-            }
-            else if(await DBMethods.GetStudentsCount() >= 1)
-            {
-                var students = await DBMethods.GetStudents();
-                
-                DBMethods.ClearItems(StudentsInfoGrid);
-
-                foreach (var student in students)
-                {
-                    StudentsInfoGrid.Items.Add(student);
-                }
-            }
-            else
-            {
-                MessageBox.Show("Students Table Doesn't Exist!");
-            }
+            ShowStudents();
         }
 
-        private async void ShowVisitationsButton_Click(object sender, RoutedEventArgs e)
+        private void ShowVisitationsButton_Click(object sender, RoutedEventArgs e)
         {
-            if(await DBMethods.GetVisitationsCount() == 0)
-            {
-                MessageBox.Show("Visitations Table Is Empty!");
-                return;
-            }
-            else if (await DBMethods.GetVisitationsCount() >= 1)
-            {
-                var visitations = await DBMethods.GetVisitations();
-                DBMethods.CreateVisitationColumns();
-                DBMethods.ClearItems(VisitationsInfoGrid);
-
-                foreach (var visit in visitations)
-                {
-                    VisitationsInfoGrid.Items.Add(visit);
-                }
-            }
-            else
-            {
-                MessageBox.Show("Visitations Table Doesn't Exist!");
-            }
+            ShowVisitations();
         }
 
         private async void ShowSubjectsButton_Click(object sender, RoutedEventArgs e)
         {
-            if (await DBMethods.GetSubjectsCount() == 0)
-            {
-                MessageBox.Show("Subjects Table Is Empty!");
-                return;
-            }
-            else if (await DBMethods.GetSubjectsCount() >= 1)
-            {
-                var subjects = await DBMethods.GetSubjects();
-                DBMethods.CreateSubjectColumns();
-                DBMethods.ClearItems(SubjectsInfoGrid);
-
-                foreach (var subject in subjects)
-                {
-                    SubjectsInfoGrid.Items.Add(subject);
-                }
-            }
-            else
-            {
-                MessageBox.Show("Subjects Table Doesn't Exist!");
-            }
+            ShowSubjects();
         }
 
         private async void ShowGroups_Click(object sender, RoutedEventArgs e)
         {
-            if (await DBMethods.GetGroupsCount() == 0)
-            {
-                MessageBox.Show("Groups Table Is Empty!");
-                return;
-            }
-            else if (await DBMethods.GetGroupsCount() >= 1)
-            {
-                var groups = await DBMethods.GetGroups();
-                DBMethods.CreateGroupsColumns();
-                DBMethods.ClearItems(GroupsInfoGrid);
-
-                foreach (var group in groups)
-                {
-                    GroupsInfoGrid.Items.Add(group);
-                }
-            }
-            else
-            {
-                MessageBox.Show("Groups Table Doesn't Exist!");
-            }
+            ShowGroups();
         }
 
-        private async void FullGroups_Click(object sender, RoutedEventArgs e)
+        private void FullGroups_Click(object sender, RoutedEventArgs e)
         {
-            if (await DBMethods.GetGroupsCount() == 0)
-            {
-                MessageBox.Show("Groups Table Is Empty!");
-                return;
-            }
-            else if (await DBMethods.GetGroupsCount() >= 1)
-            {
-                var groups = await DBMethods.GetNonEmptyGroups();
-                DBMethods.CreateGroupsColumns();
-                DBMethods.ClearItems(GroupsInfoGrid);
-
-                foreach (var group in groups)
-                {
-                    GroupsInfoGrid.Items.Add(group);
-                }
-            }
-            else
-            {
-                MessageBox.Show("Groups Table Doesn't Exist!");
-            }
+            FullGroups();   
         }
 
         private void ClearStudents_Click(object sender, RoutedEventArgs e)
@@ -249,6 +156,126 @@ namespace StudentsVisitationsWPF
         {
             MonthYearWindow myw = new MonthYearWindow();
             myw.ShowDialog();
+        }
+
+        internal async void ShowStudents()
+        {
+            if (await DBMethods.GetStudentsCount() == 0)
+            {
+                MessageBox.Show("Students Table Is Empty!");
+                return;
+            }
+            else if (await DBMethods.GetStudentsCount() >= 1)
+            {
+                var students = await DBMethods.GetStudents();
+
+                DBMethods.ClearItems(StudentsInfoGrid);
+
+                foreach (var student in students)
+                {
+                    StudentsInfoGrid.Items.Add(student);
+                }
+            }
+            else
+            {
+                MessageBox.Show("Students Table Doesn't Exist!");
+            }
+        }
+
+        internal async void ShowVisitations()
+        {
+            if (await DBMethods.GetVisitationsCount() == 0)
+            {
+                MessageBox.Show("Visitations Table Is Empty!");
+                return;
+            }
+            else if (await DBMethods.GetVisitationsCount() >= 1)
+            {
+                var visitations = await DBMethods.GetVisitations();
+                DBMethods.CreateVisitationColumns();
+                DBMethods.ClearItems(VisitationsInfoGrid);
+
+                foreach (var visit in visitations)
+                {
+                    VisitationsInfoGrid.Items.Add(visit);
+                }
+            }
+            else
+            {
+                MessageBox.Show("Visitations Table Doesn't Exist!");
+            }
+        }
+
+        internal async void ShowSubjects()
+        {
+            if (await DBMethods.GetSubjectsCount() == 0)
+            {
+                MessageBox.Show("Subjects Table Is Empty!");
+                return;
+            }
+            else if (await DBMethods.GetSubjectsCount() >= 1)
+            {
+                var subjects = await DBMethods.GetSubjects();
+                DBMethods.CreateSubjectColumns();
+                DBMethods.ClearItems(SubjectsInfoGrid);
+
+                foreach (var subject in subjects)
+                {
+                    SubjectsInfoGrid.Items.Add(subject);
+                }
+            }
+            else
+            {
+                MessageBox.Show("Subjects Table Doesn't Exist!");
+            }
+        }
+
+        internal async void ShowGroups()
+        {
+            if (await DBMethods.GetGroupsCount() == 0)
+            {
+                MessageBox.Show("Groups Table Is Empty!");
+                return;
+            }
+            else if (await DBMethods.GetGroupsCount() >= 1)
+            {
+                var groups = await DBMethods.GetGroups();
+                DBMethods.CreateGroupsColumns();
+                DBMethods.ClearItems(GroupsInfoGrid);
+
+                foreach (var group in groups)
+                {
+                    GroupsInfoGrid.Items.Add(group);
+                }
+            }
+            else
+            {
+                MessageBox.Show("Groups Table Doesn't Exist!");
+            }
+        }
+
+        internal async void FullGroups()
+        {
+            if (await DBMethods.GetGroupsCount() == 0)
+            {
+                MessageBox.Show("Groups Table Is Empty!");
+                return;
+            }
+            else if (await DBMethods.GetGroupsCount() >= 1)
+            {
+                var groups = await DBMethods.GetNonEmptyGroups();
+                DBMethods.CreateGroupsColumns();
+                DBMethods.ClearItems(GroupsInfoGrid);
+
+                foreach (var group in groups)
+                {
+                    GroupsInfoGrid.Items.Add(group);
+                }
+            }
+            else
+            {
+                MessageBox.Show("Groups Table Doesn't Exist!");
+            }
         }
 
         
