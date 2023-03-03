@@ -23,23 +23,15 @@ namespace StudentsVisitationsWPF
         public AddVisitation()
         {
             InitializeComponent();
+           
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
             FillComboBoxes();
         }
 
-        public async void FillComboBoxes()
-        {
-            var stu = await DBMethods.GetStudents();
-            foreach (var student in stu)
-            {
-                ComboBox.Items.Add(student.FIO);
-            }
-
-            var sub = await DBMethods.GetSubjects();
-            foreach (var subject in sub)
-            {
-                SubjectComboBox.Items.Add(subject.Name);
-            }
-        }
+        
 
         private async void AddButton_Click(object sender, RoutedEventArgs e)
         {
@@ -77,6 +69,21 @@ namespace StudentsVisitationsWPF
             this.Close();
         }
 
-        
+        public async void FillComboBoxes()
+        {
+            var stu = await DBMethods.GetStudents();
+            foreach (var student in stu)
+            {
+                ComboBox.Items.Add(student.FIO);
+            }
+
+            var sub = await DBMethods.GetSubjects();
+            foreach (var subject in sub)
+            {
+                SubjectComboBox.Items.Add(subject.Name);
+            }
+        }
+
+
     }
 }

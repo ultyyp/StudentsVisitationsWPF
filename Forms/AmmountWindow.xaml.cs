@@ -56,44 +56,26 @@ namespace StudentsVisitationsWPF
                     MessageBox.Show("Please enter a valid ammount!");
                     return;
                 }
-                
-                if (type == "student")
-                {
-                    if (ammount > 0) //DBMethods.StudentTableExists() == true
-                    {
-                        DBMethods.GenerateStudents(ammount);
-                    }
-                    else
-                    {
-                        MessageBox.Show("Enter Valid Ammount!");
-                    }
-                    this.Close();
-                }
-                else if (type == "visitation")
-                {
-                    if (ammount > 0) //DBMethods.VisitationTableExists() == true
-                    {
-                        DBMethods.GenerateVisitations(ammount);
-                    }
-                    else
-                    {
-                        MessageBox.Show("Enter Valid Ammount!");
-                    }
-                    this.Close();
-                }
-                else if (type == "subject")
-                {
-                    if (ammount > 0) //DBMethods.VisitationTableExists() == true
-                    {
-                        DBMethods.GenerateSubjects(ammount);
-                    }
-                    else
-                    {
-                        MessageBox.Show("Enter Valid Ammount!");
-                    }
-                    this.Close();
-                }
 
+                switch (type)
+                {
+                    case "student":
+                        DBMethods.GenerateStudents(ammount);
+                        this.Close();
+                        break;
+                    case "visitation":
+                        DBMethods.GenerateVisitations(ammount);
+                        this.Close();
+                        break;
+                    case "subject":
+                        DBMethods.GenerateSubjects(ammount);
+                        this.Close();
+                        break;
+                    case "group":
+                        DBMethods.GenerateGroups(ammount);
+                        this.Close();
+                        break;
+                }
             }
         }
 

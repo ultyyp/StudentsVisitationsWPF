@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:StudentsVisitationsWPF"
         mc:Ignorable="d"
-        Title="AddVisitation" Height="179" Width="315">
+        Title="AddVisitation" Height="179" Width="315"
+        Loaded="Window_Loaded">
     <Grid>
         <Label Content="Student:" HorizontalAlignment="Left" Margin="10,23,0,0" VerticalAlignment="Top"/>
         <DatePicker Name="DATEDatePicker" HorizontalAlignment="Left" Margin="50,82,0,0" VerticalAlignment="Top"/>

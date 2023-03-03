@@ -25,7 +25,15 @@ namespace StudentsVisitationsWPF
             InitializeComponent();
         }
 
-        private void AddButton_Click(object sender, RoutedEventArgs e)
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            FillComboBox();
+        }
+
+
+        
+
+        private async void AddButton_Click(object sender, RoutedEventArgs e)
         {
             Student st = new Student();
             st.Id = Guid.NewGuid();
@@ -51,12 +59,36 @@ namespace StudentsVisitationsWPF
                 MessageBox.Show("Please enter a valid email!");
                 return;
             }
+
+            if(GroupComboBox.SelectedIndex == -1)
+            {
+                MessageBox.Show("Please select a group!");
+                return;
+            }
+
+            var selectedGroupName = GroupComboBox.SelectedItem.ToString();
+            var groups = await DBMethods.GetGroups();
+            var selectedGroups = groups.Where(x => x.Name == selectedGroupName).ToList();
+            st.Group = selectedGroups[0];
+
+
             DBMethods.AddStudent(st);
+
+            //selectedGroups[0].Students.Add(st); //Adding the student
+
             MessageBox.Show("Student Added!");
             this.Close();
         }
 
-        
+        public async void FillComboBox()
+        {
+            var groups = await DBMethods.GetGroups();
+            foreach (var group in groups)
+            {
+                GroupComboBox.Items.Add(group.Name);
+            }
+        }
+
 
     }
 }

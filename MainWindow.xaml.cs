@@ -61,11 +61,23 @@ namespace StudentsVisitationsWPF
             amw.ShowDialog();
         }
 
+        private void GenerateGroups_Click(object sender, RoutedEventArgs e)
+        {
+            AmmountWindow amw = new AmmountWindow("group");
+            amw.ShowDialog();
+        }
+
         private void AddStudentButton_Click(object sender, RoutedEventArgs e)
         {
 
             AddStudentWindow adw = new AddStudentWindow();
             adw.ShowDialog();
+        }
+
+        private void AddGroup_Click(object sender, RoutedEventArgs e)
+        {
+            AddGroupWindow agw = new AddGroupWindow();
+            agw.ShowDialog();
         }
 
         private void AddVisitationButton_Click(object sender, RoutedEventArgs e)
@@ -90,6 +102,7 @@ namespace StudentsVisitationsWPF
             else if(await DBMethods.GetStudentsCount() >= 1)
             {
                 var students = await DBMethods.GetStudents();
+                
                 DBMethods.CreateStudentColumns();
                 DBMethods.ClearItems();
 
@@ -152,6 +165,54 @@ namespace StudentsVisitationsWPF
             }
         }
 
+        private async void ShowGroups_Click(object sender, RoutedEventArgs e)
+        {
+            if (await DBMethods.GetGroupsCount() == 0)
+            {
+                MessageBox.Show("Groups Table Is Empty!");
+                return;
+            }
+            else if (await DBMethods.GetGroupsCount() >= 1)
+            {
+                var groups = await DBMethods.GetGroups();
+                DBMethods.CreateGroupsColumns();
+                DBMethods.ClearItems();
+
+                foreach (var group in groups)
+                {
+                    InfoGrid.Items.Add(group);
+                }
+            }
+            else
+            {
+                MessageBox.Show("Groups Table Doesn't Exist!");
+            }
+        }
+
+        private async void FullGroups_Click(object sender, RoutedEventArgs e)
+        {
+            if (await DBMethods.GetGroupsCount() == 0)
+            {
+                MessageBox.Show("Groups Table Is Empty!");
+                return;
+            }
+            else if (await DBMethods.GetGroupsCount() >= 1)
+            {
+                var groups = await DBMethods.GetNonEmptyGroups();
+                DBMethods.CreateGroupsColumns();
+                DBMethods.ClearItems();
+
+                foreach (var group in groups)
+                {
+                    InfoGrid.Items.Add(group);
+                }
+            }
+            else
+            {
+                MessageBox.Show("Groups Table Doesn't Exist!");
+            }
+        }
+
         private void ClearStudents_Click(object sender, RoutedEventArgs e)
         {
             DBMethods.ClearStudents();
@@ -165,6 +226,17 @@ namespace StudentsVisitationsWPF
         private void ClearSubjectsButton_Click(object sender, RoutedEventArgs e)
         {
             DBMethods.ClearSubjects(); 
+        }
+
+        private void ClearGroups_Click(object sender, RoutedEventArgs e)
+        {
+            DBMethods.ClearGroups();
+        }
+
+        private void SearchMY_Click(object sender, RoutedEventArgs e)
+        {
+            MonthYearWindow myw = new MonthYearWindow();
+            myw.ShowDialog();
         }
     }
 }

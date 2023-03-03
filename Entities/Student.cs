@@ -11,8 +11,9 @@ namespace StudentsVisitationsWPF.Entities
         public Guid Id { get; set; }
         public string FIO { get; set; }
         public DateOnly DOB { get; set; }
-
         public string Email { get; set; }
+        public Group? Group { get; set; }
+        public List<Visitation?> Visitations { get; set; }
 
         public override string ToString()
         {

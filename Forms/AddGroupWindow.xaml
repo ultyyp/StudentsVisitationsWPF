@@ -1,0 +1,15 @@
+﻿<Window x:Class="StudentsVisitationsWPF.Forms.AddGroupWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:StudentsVisitationsWPF.Forms"
+        mc:Ignorable="d"
+        Title="AddGroupWindow" Height="133" Width="232">
+    <Grid>
+        <Label Content="Group Name:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,10,0,0"/>
+        <TextBox Name="NameTextBox" HorizontalAlignment="Left" Margin="81,14,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
+        <Button Name="AddButton" Content="Add" HorizontalAlignment="Left" Margin="81,49,0,0" VerticalAlignment="Top" Height="28" Width="46" Click="AddButton_Click"/>
+
+    </Grid>
+</Window>
