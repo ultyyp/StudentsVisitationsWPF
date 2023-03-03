@@ -169,7 +169,7 @@ namespace StudentsVisitationsWPF
             {
                 var students = await DBMethods.GetStudents();
 
-                DBMethods.ClearItems(StudentsInfoGrid);
+                StudentsInfoGrid.Items.Clear();
 
                 foreach (var student in students)
                 {
@@ -193,7 +193,7 @@ namespace StudentsVisitationsWPF
             {
                 var visitations = await DBMethods.GetVisitations();
                 DBMethods.CreateVisitationColumns();
-                DBMethods.ClearItems(VisitationsInfoGrid);
+                VisitationsInfoGrid.Items.Clear();
 
                 foreach (var visit in visitations)
                 {
@@ -217,8 +217,8 @@ namespace StudentsVisitationsWPF
             {
                 var subjects = await DBMethods.GetSubjects();
                 DBMethods.CreateSubjectColumns();
-                DBMethods.ClearItems(SubjectsInfoGrid);
-
+                SubjectsInfoGrid.Items.Clear();
+                    
                 foreach (var subject in subjects)
                 {
                     SubjectsInfoGrid.Items.Add(subject);
@@ -241,7 +241,7 @@ namespace StudentsVisitationsWPF
             {
                 var groups = await DBMethods.GetGroups();
                 DBMethods.CreateGroupsColumns();
-                DBMethods.ClearItems(GroupsInfoGrid);
+                GroupsInfoGrid.Items.Clear();
 
                 foreach (var group in groups)
                 {
@@ -252,8 +252,9 @@ namespace StudentsVisitationsWPF
             {
                 MessageBox.Show("Groups Table Doesn't Exist!");
             }
+            
         }
-
+        
         internal async void FullGroupsMethod()
         {
             if (await DBMethods.GetGroupsCount() == 0)
@@ -265,7 +266,7 @@ namespace StudentsVisitationsWPF
             {
                 var groups = await DBMethods.GetNonEmptyGroups();
                 DBMethods.CreateGroupsColumns();
-                DBMethods.ClearItems(GroupsInfoGrid);
+                GroupsInfoGrid.Items.Clear();
 
                 foreach (var group in groups)
                 {

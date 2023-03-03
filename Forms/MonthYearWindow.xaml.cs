@@ -50,8 +50,8 @@ namespace StudentsVisitationsWPF.Forms
                     return; 
                 }
 
-                DBMethods.ClearColumns(((MainWindow)Application.Current.MainWindow).StudentsInfoGrid);
-                DBMethods.ClearItems(((MainWindow)Application.Current.MainWindow).StudentsInfoGrid);
+                ((MainWindow)Application.Current.MainWindow).StudentsInfoGrid.Columns.Clear();
+                ((MainWindow)Application.Current.MainWindow).StudentsInfoGrid.Items.Clear();
                 DBMethods.CreateStudentColumns();
 
                 foreach (var stu in students)

@@ -43,7 +43,7 @@ namespace StudentsVisitationsWPF
                     DateOnly donly = new DateOnly(dt.Year, dt.Month, dt.Day);
 
                     DBMethods.CreateVisitationColumns();
-                    DBMethods.ClearItems(((MainWindow)Application.Current.MainWindow).VisitationsInfoGrid);
+                    ((MainWindow)Application.Current.MainWindow).VisitationsInfoGrid.Items.Clear();
 
                     for (int i = visitations.ToList().Count - 1; i >= 0; i--)
                     {
