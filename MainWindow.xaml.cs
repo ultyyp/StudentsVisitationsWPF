@@ -109,27 +109,27 @@ namespace StudentsVisitationsWPF
 
         private void ShowStudentsButton_Click(object sender, RoutedEventArgs e)
         {
-            ShowStudents();
+            ShowStudentsMethod();
         }
 
         private void ShowVisitationsButton_Click(object sender, RoutedEventArgs e)
         {
-            ShowVisitations();
+            ShowVisitationsMethod();
         }
 
-        private async void ShowSubjectsButton_Click(object sender, RoutedEventArgs e)
+        private void ShowSubjectsButton_Click(object sender, RoutedEventArgs e)
         {
-            ShowSubjects();
+            ShowSubjectsMethod();
         }
 
-        private async void ShowGroups_Click(object sender, RoutedEventArgs e)
+        private void ShowGroups_Click(object sender, RoutedEventArgs e)
         {
-            ShowGroups();
+            ShowGroupsMethod();
         }
 
         private void FullGroups_Click(object sender, RoutedEventArgs e)
         {
-            FullGroups();   
+            FullGroupsMethod();   
         }
 
         private void ClearStudents_Click(object sender, RoutedEventArgs e)
@@ -158,7 +158,7 @@ namespace StudentsVisitationsWPF
             myw.ShowDialog();
         }
 
-        internal async void ShowStudents()
+        internal async void ShowStudentsMethod()
         {
             if (await DBMethods.GetStudentsCount() == 0)
             {
@@ -182,7 +182,7 @@ namespace StudentsVisitationsWPF
             }
         }
 
-        internal async void ShowVisitations()
+        internal async void ShowVisitationsMethod()
         {
             if (await DBMethods.GetVisitationsCount() == 0)
             {
@@ -206,7 +206,7 @@ namespace StudentsVisitationsWPF
             }
         }
 
-        internal async void ShowSubjects()
+        internal async void ShowSubjectsMethod()
         {
             if (await DBMethods.GetSubjectsCount() == 0)
             {
@@ -230,7 +230,7 @@ namespace StudentsVisitationsWPF
             }
         }
 
-        internal async void ShowGroups()
+        internal async void ShowGroupsMethod()
         {
             if (await DBMethods.GetGroupsCount() == 0)
             {
@@ -254,7 +254,7 @@ namespace StudentsVisitationsWPF
             }
         }
 
-        internal async void FullGroups()
+        internal async void FullGroupsMethod()
         {
             if (await DBMethods.GetGroupsCount() == 0)
             {
