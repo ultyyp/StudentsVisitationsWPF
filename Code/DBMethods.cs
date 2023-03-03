@@ -285,6 +285,7 @@ namespace StudentsVisitationsWPF
                     Email = randominfo.Email
                 };
                 student.Group = groups[randomnum];
+                ((MainWindow)Application.Current.MainWindow).StudentsInfoGrid.Items.Add(student);
                 AddStudent(student);
                 
             }
@@ -321,6 +322,7 @@ namespace StudentsVisitationsWPF
                     DateOnly bd = stu[randomnum-1].DOB;
                     visitation.Date = new DateOnly(randomiser.Int(bd.Year - 1, 2022), randomiser.Int(bd.Month, 12), randomiser.Int(bd.Day, 29));
                     AddVisit(visitation);
+                    ((MainWindow)Application.Current.MainWindow).VisitationsInfoGrid.Items.Add(visitation);
                     stu[randomnum - 1].Visitations.Add(visitation); //Adding the visitation to the student
                 }
 
@@ -359,6 +361,7 @@ namespace StudentsVisitationsWPF
                     Name= randominfo.Name
                 };
                 AddSubject(subject);
+                ((MainWindow)Application.Current.MainWindow).SubjectsInfoGrid.Items.Add(subject);
             }
 
             MessageBox.Show("Subjects Generated!");
@@ -384,6 +387,7 @@ namespace StudentsVisitationsWPF
                     CreationDate = DateTime.Now
                 };
                 AddGroup(group);
+                ((MainWindow)Application.Current.MainWindow).GroupsInfoGrid.Items.Add(group);
             }
 
             MessageBox.Show("Groups Generated!");
@@ -589,6 +593,33 @@ namespace StudentsVisitationsWPF
             col4.IsReadOnly = false;
             ((MainWindow)Application.Current.MainWindow).GroupsInfoGrid.Columns.Add(col4);
 
+        }
+
+        public static async void FillAllGrids()
+        {
+            var studentgrid = ((MainWindow)Application.Current.MainWindow).StudentsInfoGrid;
+            var subjectgrid = ((MainWindow)Application.Current.MainWindow).SubjectsInfoGrid;
+            var groupgrid = ((MainWindow)Application.Current.MainWindow).GroupsInfoGrid;
+            var visitationsgrid = ((MainWindow)Application.Current.MainWindow).VisitationsInfoGrid;
+            foreach (var student in db.Students.Include(stu=>stu.Visitations))
+            {
+                studentgrid.Items.Add(student);
+            }
+
+            foreach (var subject in db.Subjects)
+            {
+                subjectgrid.Items.Add(subject);
+            }
+
+            foreach (var group in db.Groups.Include(g=>g.Students))
+            {
+                groupgrid.Items.Add(group);
+            }
+
+            foreach (var visitation in db.Visitations.Include(v=>v.Student).Include(v=>v.Subject))
+            {
+                visitationsgrid.Items.Add(visitation);
+            }
         }
 
     }

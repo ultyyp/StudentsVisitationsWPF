@@ -44,6 +44,7 @@ namespace StudentsVisitationsWPF.Forms
                 CreationDate = DateTime.Now
             };
             DBMethods.AddGroup(group);
+            ((MainWindow)Application.Current.MainWindow).GroupsInfoGrid.Items.Add(group);
             MessageBox.Show("Group Added!");
             this.Close();
         }

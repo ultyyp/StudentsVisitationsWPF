@@ -83,8 +83,9 @@ namespace StudentsVisitationsWPF
 
 
             DBMethods.AddStudent(st);
+            ((MainWindow)Application.Current.MainWindow).StudentsInfoGrid.Items.Add(st);
 
-            //selectedGroups[0].Students.Add(st); //Adding the student
+            
 
             MessageBox.Show("Student Added!");
             this.Close();
