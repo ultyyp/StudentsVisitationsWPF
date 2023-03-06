@@ -203,6 +203,22 @@ namespace StudentsVisitationsWPF
             }
         }
 
+        public static async void EditStudent(Guid guid, Student st)
+        {
+            foreach(var student in db.Students.Include(s=>s.Group).Include(s=>s.Visitations))
+            {
+                if(student.Id == guid)
+                {
+                    student.FIO = st.FIO;
+                    student.DOB = st.DOB;
+                    student.Email = st.Email;
+                    student.Group = st.Group;
+                }
+            }
+
+            await db.SaveChangesAsync();
+        }
+
         public static async void AddVisit(Visitation visit)
         {
             await db.Visitations.AddAsync(visit);
@@ -289,7 +305,7 @@ namespace StudentsVisitationsWPF
                 AddStudent(student);
                 
             }
-
+            RefreshTables();
             MessageBox.Show("Students Generated!");
 
         }
@@ -323,9 +339,10 @@ namespace StudentsVisitationsWPF
                     visitation.Date = new DateOnly(randomiser.Int(bd.Year - 1, 2022), randomiser.Int(bd.Month, 12), randomiser.Int(bd.Day, 29));
                     AddVisit(visitation);
                     ((MainWindow)Application.Current.MainWindow).VisitationsInfoGrid.Items.Add(visitation);
+                    ((MainWindow)Application.Current.MainWindow).StudentsVisitationsInfoGrid.Items.Add(visitation);
                     stu[randomnum - 1].Visitations.Add(visitation); //Adding the visitation to the student
                 }
-
+                RefreshTables();
                 MessageBox.Show("Visitations Generated!");
 
             }
@@ -363,7 +380,7 @@ namespace StudentsVisitationsWPF
                 AddSubject(subject);
                 ((MainWindow)Application.Current.MainWindow).SubjectsInfoGrid.Items.Add(subject);
             }
-
+            RefreshTables();
             MessageBox.Show("Subjects Generated!");
 
         }
@@ -388,9 +405,12 @@ namespace StudentsVisitationsWPF
                 };
                 AddGroup(group);
                 ((MainWindow)Application.Current.MainWindow).GroupsInfoGrid.Items.Add(group);
+                ((MainWindow)Application.Current.MainWindow).StudentsGroupsInfoGrid.Items.Add(group);
             }
-
+            RefreshTables();
             MessageBox.Show("Groups Generated!");
+
+
 
         }
 
@@ -412,6 +432,7 @@ namespace StudentsVisitationsWPF
 
         public static async void ClearStudents()
         {
+
             try
             {
                 foreach (var item in db.Students)
@@ -421,6 +442,7 @@ namespace StudentsVisitationsWPF
                 db.SaveChanges();
                 MessageBox.Show("Students Cleared!");
                 ClearItems(((MainWindow)Application.Current.MainWindow).StudentsInfoGrid);
+                RefreshTables();
             }
             catch (Exception ex)
             {
@@ -438,6 +460,8 @@ namespace StudentsVisitationsWPF
             db.SaveChanges();
             MessageBox.Show("Visitations Cleared!");
             ClearItems(((MainWindow)Application.Current.MainWindow).VisitationsInfoGrid);
+            ClearItems(((MainWindow)Application.Current.MainWindow).StudentsVisitationsInfoGrid);
+            RefreshTables();
         }
 
         public static async void ClearSubjects()
@@ -451,6 +475,7 @@ namespace StudentsVisitationsWPF
                 db.SaveChanges();
                 MessageBox.Show("Subjects Cleared!");
                 ClearItems(((MainWindow)Application.Current.MainWindow).SubjectsInfoGrid);
+                RefreshTables();
             }
             catch(Exception ex) 
             {
@@ -470,6 +495,8 @@ namespace StudentsVisitationsWPF
                 db.SaveChanges();
                 MessageBox.Show("Groups Cleared!");
                 ClearItems(((MainWindow)Application.Current.MainWindow).GroupsInfoGrid);
+                ClearItems(((MainWindow)Application.Current.MainWindow).StudentsGroupsInfoGrid);
+                RefreshTables();
             }
             catch (Exception ex)
             {
@@ -501,7 +528,7 @@ namespace StudentsVisitationsWPF
         {
             ClearColumns(((MainWindow)Application.Current.MainWindow).VisitationsInfoGrid);
             ClearItems(((MainWindow)Application.Current.MainWindow).VisitationsInfoGrid);
-
+            
             var col2 = new DataGridTextColumn();
             col2.Header = "Student";
             col2.Binding = new Binding("Student");
@@ -521,6 +548,32 @@ namespace StudentsVisitationsWPF
             col4.IsReadOnly = false;
             ((MainWindow)Application.Current.MainWindow).VisitationsInfoGrid.Columns.Add(col4);
         }
+
+        public static void CreateStudentsVisitationColumns()
+        {
+            ClearColumns(((MainWindow)Application.Current.MainWindow).StudentsVisitationsInfoGrid);
+            ClearItems(((MainWindow)Application.Current.MainWindow).StudentsVisitationsInfoGrid);
+
+            var col2 = new DataGridTextColumn();
+            col2.Header = "Student";
+            col2.Binding = new Binding("Student");
+            col2.IsReadOnly = false;
+            ((MainWindow)Application.Current.MainWindow).StudentsVisitationsInfoGrid.Columns.Add(col2);
+
+            var col3 = new DataGridTextColumn();
+            col3.Header = "Subject";
+            col3.Binding = new Binding("Subject");
+            col3.IsReadOnly = false;
+            ((MainWindow)Application.Current.MainWindow).StudentsVisitationsInfoGrid.Columns.Add(col3);
+
+            var col4 = new DataGridTextColumn();
+            col4.Header = "Date";
+            col4.Binding = new Binding("Date");
+            col4.Binding.StringFormat = "dd/MM/yyyy";
+            col4.IsReadOnly = false;
+            ((MainWindow)Application.Current.MainWindow).StudentsVisitationsInfoGrid.Columns.Add(col4);
+        }
+
         public static void CreateSubjectColumns()
         {
             ClearColumns(((MainWindow)Application.Current.MainWindow).SubjectsInfoGrid);
@@ -572,7 +625,8 @@ namespace StudentsVisitationsWPF
 
         public static void CreateGroupsColumns()
         {
-            ClearColumns(((MainWindow)Application.Current.MainWindow).GroupsInfoGrid);
+            ClearItems(((MainWindow)Application.Current.MainWindow).StudentsGroupsInfoGrid);
+            ClearColumns(((MainWindow)Application.Current.MainWindow).StudentsGroupsInfoGrid);
 
             var col2 = new DataGridTextColumn();
             col2.Header = "Name";
@@ -592,15 +646,43 @@ namespace StudentsVisitationsWPF
             col4.Binding = new Binding("StudentCount");
             col4.IsReadOnly = false;
             ((MainWindow)Application.Current.MainWindow).GroupsInfoGrid.Columns.Add(col4);
+        }
+
+        public static void CreateStudentsGroupsColumns()
+        {
+            ClearItems(((MainWindow)Application.Current.MainWindow).StudentsGroupsInfoGrid);
+            ClearColumns(((MainWindow)Application.Current.MainWindow).StudentsGroupsInfoGrid);
+
+            var col2 = new DataGridTextColumn();
+            col2.Header = "Name";
+            col2.Binding = new Binding("Name");
+            col2.IsReadOnly = false;
+            ((MainWindow)Application.Current.MainWindow).StudentsGroupsInfoGrid.Columns.Add(col2);
+
+            var col3 = new DataGridTextColumn();
+            col3.Header = "Creation Date";
+            col3.Binding = new Binding("CreationDate");
+            col3.Binding.StringFormat = "dd/MM/yyyy";
+            col3.IsReadOnly = false;
+            ((MainWindow)Application.Current.MainWindow).StudentsGroupsInfoGrid.Columns.Add(col3);
+
+            var col4 = new DataGridTextColumn();
+            col4.Header = "Students Count";
+            col4.Binding = new Binding("StudentCount");
+            col4.IsReadOnly = false;
+            ((MainWindow)Application.Current.MainWindow).StudentsGroupsInfoGrid.Columns.Add(col4);
 
         }
 
         public static async void FillAllGrids()
         {
             var studentgrid = ((MainWindow)Application.Current.MainWindow).StudentsInfoGrid;
+            var studentvisitsgrid = ((MainWindow)Application.Current.MainWindow).StudentsVisitationsInfoGrid;
+            var studentgroupsgrid = ((MainWindow)Application.Current.MainWindow).StudentsGroupsInfoGrid;
             var subjectgrid = ((MainWindow)Application.Current.MainWindow).SubjectsInfoGrid;
             var groupgrid = ((MainWindow)Application.Current.MainWindow).GroupsInfoGrid;
             var visitationsgrid = ((MainWindow)Application.Current.MainWindow).VisitationsInfoGrid;
+
             foreach (var student in db.Students.Include(stu=>stu.Visitations))
             {
                 studentgrid.Items.Add(student);
@@ -614,13 +696,34 @@ namespace StudentsVisitationsWPF
             foreach (var group in db.Groups.Include(g=>g.Students))
             {
                 groupgrid.Items.Add(group);
+                studentgroupsgrid.Items.Add(group);
             }
 
             foreach (var visitation in db.Visitations.Include(v=>v.Student).Include(v=>v.Subject))
             {
                 visitationsgrid.Items.Add(visitation);
+                studentvisitsgrid.Items.Add(visitation);
             }
         }
 
+        public static void RefreshTables()
+        {
+            var studentgrid = ((MainWindow)Application.Current.MainWindow).StudentsInfoGrid;
+            var studentvisitsgrid = ((MainWindow)Application.Current.MainWindow).StudentsVisitationsInfoGrid;
+            var studentgroupsgrid = ((MainWindow)Application.Current.MainWindow).StudentsGroupsInfoGrid;
+            var subjectgrid = ((MainWindow)Application.Current.MainWindow).SubjectsInfoGrid;
+            var groupgrid = ((MainWindow)Application.Current.MainWindow).GroupsInfoGrid;
+            var visitationsgrid = ((MainWindow)Application.Current.MainWindow).VisitationsInfoGrid;
+
+            ClearItems(studentgrid);
+            ClearItems(studentgroupsgrid);
+            ClearItems(studentvisitsgrid);
+            ClearItems(subjectgrid);
+            ClearItems(groupgrid);
+            ClearItems(visitationsgrid);
+            
+
+            FillAllGrids();
+        }
     }
 }

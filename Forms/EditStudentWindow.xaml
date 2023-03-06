@@ -1,0 +1,28 @@
+﻿<Window x:Class="StudentsVisitationsWPF.Forms.EditStudentWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:StudentsVisitationsWPF.Forms"
+        mc:Ignorable="d"
+        Title="EditStudentWindow" Height="217" Width="464"
+        Loaded="Window_Loaded">
+    <Grid>
+        <Label Content="FIO:" HorizontalAlignment="Left" Margin="49,20,0,0" VerticalAlignment="Top" Width="55"/>
+        <Label Content="DOB:" HorizontalAlignment="Left" Margin="49,51,0,0" VerticalAlignment="Top" Width="55" RenderTransformOrigin="0.56,-0.57"/>
+        <Label Content="Email:" HorizontalAlignment="Left" Margin="49,77,0,0" VerticalAlignment="Top" Width="55" RenderTransformOrigin="0.495,1.211"/>
+        <TextBox Name ="FIOTextBox" HorizontalAlignment="Left" Margin="96,24,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="132"/>
+        <DatePicker Name="DOBDatePicker" HorizontalAlignment="Left" Margin="96,52,0,0" VerticalAlignment="Top"/>
+        <TextBox Name="EMAILTextBox" HorizontalAlignment="Left" Margin="96,82,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
+        <Button Content="Edit Student" Name="EditButton" HorizontalAlignment="Left" Margin="310,80,0,0" VerticalAlignment="Top" RenderTransformOrigin="1.61,-0.098" Height="36" Width="71" Click="EditButton_Click" >
+            <Button.Resources>
+                <Style TargetType="Border">
+                    <Setter Property="CornerRadius" Value="5"/>
+                </Style>
+            </Button.Resources>
+        </Button>
+        <Label Content="Group:" HorizontalAlignment="Left" Margin="49,103,0,0" VerticalAlignment="Top"/>
+        <ComboBox Name="GroupComboBox" HorizontalAlignment="Left" Margin="96,107,0,0" VerticalAlignment="Top" Width="120"/>
+
+    </Grid>
+</Window>

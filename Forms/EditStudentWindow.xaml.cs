@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StudentsVisitationsWPF.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,48 +12,51 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using StudentsVisitationsWPF.Entities;
 
-namespace StudentsVisitationsWPF
+namespace StudentsVisitationsWPF.Forms
 {
     /// <summary>
-    /// Interaction logic for AddStudentWindow.xaml
+    /// Interaction logic for EditStudentWindow.xaml
     /// </summary>
-    public partial class AddStudentWindow : Window
+    public partial class EditStudentWindow : Window
     {
-        public AddStudentWindow()
+        internal Student? selectedStudent;
+
+        public EditStudentWindow(Student student)
         {
             InitializeComponent();
+            selectedStudent = student;
         }
-
+        
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             FillComboBox();
         }
 
-        private async void AddButton_Click(object sender, RoutedEventArgs e)
+        private async void EditButton_Click(object sender, RoutedEventArgs e)
         {
-
+            
             Student st = new Student();
-            st.Id = Guid.NewGuid();
+            st.Id = selectedStudent.Id;
+
             st.FIO = FIOTextBox.Text.Trim();
-            if(st.FIO.Length <= 0 )
+            if (st.FIO.Length <= 0)
             {
                 MessageBox.Show("Please enter a valid name!");
                 return;
             }
 
             var students = await DBMethods.GetStudents();
-            foreach( var student in students )
+            foreach (var student in students)
             {
-                if(student.FIO.Trim() == st.FIO.Trim() )
+                if (student.FIO.Trim() == st.FIO.Trim())
                 {
                     MessageBox.Show("Student with that name already exists!");
                     return;
                 }
             }
 
-            if(DOBDatePicker.SelectedDate.HasValue==false)
+            if (DOBDatePicker.SelectedDate.HasValue == false)
             {
                 MessageBox.Show("Please select a date!");
                 return;
@@ -68,7 +72,7 @@ namespace StudentsVisitationsWPF
                 return;
             }
 
-            if(GroupComboBox.SelectedIndex == -1)
+            if (GroupComboBox.SelectedIndex == -1)
             {
                 MessageBox.Show("Please select a group!");
                 return;
@@ -80,12 +84,11 @@ namespace StudentsVisitationsWPF
             st.Group = selectedGroups[0];
 
 
-            DBMethods.AddStudent(st);
-            ((MainWindow)Application.Current.MainWindow).StudentsInfoGrid.Items.Add(st);
-
+            DBMethods.EditStudent(selectedStudent.Id ,st);
+            DBMethods.RefreshTables();
+         
             
-
-            MessageBox.Show("Student Added!");
+            MessageBox.Show("Student Edited!");
             this.Close();
         }
 
@@ -98,6 +101,6 @@ namespace StudentsVisitationsWPF
             }
         }
 
-
+        
     }
 }

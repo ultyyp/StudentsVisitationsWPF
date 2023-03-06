@@ -45,6 +45,7 @@ namespace StudentsVisitationsWPF.Forms
             };
             DBMethods.AddGroup(group);
             ((MainWindow)Application.Current.MainWindow).GroupsInfoGrid.Items.Add(group);
+            ((MainWindow)Application.Current.MainWindow).StudentsGroupsInfoGrid.Items.Add(group);
             MessageBox.Show("Group Added!");
             this.Close();
         }

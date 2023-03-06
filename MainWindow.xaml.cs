@@ -43,13 +43,17 @@ namespace StudentsVisitationsWPF
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             StudentsInfoGrid.BeginningEdit += (s, ss) => ss.Cancel = true; //Fix for crashes
+            StudentsVisitationsInfoGrid.BeginningEdit += (s, ss) => ss.Cancel = true;
+            StudentsGroupsInfoGrid.BeginningEdit += (s, ss) => ss.Cancel = true;
             SubjectsInfoGrid.BeginningEdit += (s, ss) => ss.Cancel = true;
             VisitationsInfoGrid.BeginningEdit += (s, ss) => ss.Cancel = true;
             GroupsInfoGrid.BeginningEdit += (s, ss) => ss.Cancel = true;
             DBMethods.CreateStudentColumns();
             DBMethods.CreateGroupsColumns();
+            DBMethods.CreateStudentsGroupsColumns();
             DBMethods.CreateSubjectColumns();
             DBMethods.CreateVisitationColumns();
+            DBMethods.CreateStudentsVisitationColumns();
 
             DBMethods.FillAllGrids();
         }
@@ -86,9 +90,20 @@ namespace StudentsVisitationsWPF
 
         private void AddStudentButton_Click(object sender, RoutedEventArgs e)
         {
-
             AddStudentWindow adw = new AddStudentWindow();
             adw.ShowDialog();
+        }
+
+        private void EditStudentButton_Click(object sender, RoutedEventArgs e)
+        {
+            if(StudentsInfoGrid.SelectedItem == null)
+            {
+                MessageBox.Show("Please select a student to edit!");
+                return;
+            }
+
+            EditStudentWindow esw = new EditStudentWindow((Student)StudentsInfoGrid.SelectedItem);
+            esw.ShowDialog();
         }
 
         private void AddGroup_Click(object sender, RoutedEventArgs e)
@@ -162,6 +177,38 @@ namespace StudentsVisitationsWPF
             else
             {
                 MessageBox.Show("Groups Table Doesn't Exist!");
+            }
+        }
+
+        private void StudentsInfoGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if(StudentsInfoGrid.SelectedItem != null)
+            {
+                var selectedStudent = (Student)StudentsInfoGrid.SelectedItem;
+                DBMethods.ClearItems(StudentsVisitationsInfoGrid);
+
+                if(selectedStudent.Visitations == null) { return; }
+
+                foreach (var visit in selectedStudent.Visitations)
+                {
+                    StudentsVisitationsInfoGrid.Items.Add(visit);
+                }
+            }
+        }
+
+        private void StudentsGroupsInfoGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if(StudentsGroupsInfoGrid.SelectedItem!= null)
+            {
+                var selectedGroup = (Group)StudentsGroupsInfoGrid.SelectedItem;
+                DBMethods.ClearItems(StudentsInfoGrid);
+
+                if(selectedGroup.Students== null) { return; }
+
+                foreach (var student in selectedGroup.Students)
+                {
+                    StudentsInfoGrid.Items.Add(student);
+                }
             }
         }
 

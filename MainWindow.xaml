@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:StudentsVisitationsWPF"
         mc:Ignorable="d"
-        Title="MainWindow" Height="368" Width="800"
+        Title="MainWindow" Height="448" Width="806"
         Loaded="Window_Loaded">
     <Grid>
 
@@ -13,31 +13,43 @@
 
             <TabItem Header="Students">
                 <Grid Background="#FFE5E5E5">
-                    <DataGrid Name="StudentsInfoGrid" Margin="10,10,10,78" SelectionMode="Single" />
-                    <Button x:Name="SearchMY" Content="Search Student EF" HorizontalAlignment="Left" Margin="505,252,0,0" VerticalAlignment="Top" Height="45" Width="95" FontSize="10" Click="SearchMY_Click">
+                    <DataGrid Name="StudentsVisitationsInfoGrid" Margin="10,28,10,236" SelectionMode="Single" />
+                    <Button x:Name="SearchMY" Content="Search Student EF" HorizontalAlignment="Left" Margin="533,317,0,0" VerticalAlignment="Top" Height="45" Width="95" FontSize="10" Click="SearchMY_Click">
                         <Button.Resources>
                             <Style TargetType="Border">
                                 <Setter Property="CornerRadius" Value="5"/>
                             </Style>
                         </Button.Resources>
                     </Button>
-                    <Button x:Name="AddStudentButton" Content="Add Student" HorizontalAlignment="Left" Margin="205,251,0,0" VerticalAlignment="Top" Height="45" Width="95" Click="AddStudentButton_Click">
+                    <Button x:Name="AddStudentButton" Content="Add Student" HorizontalAlignment="Left" Margin="132,317,0,0" VerticalAlignment="Top" Height="45" Width="96" Click="AddStudentButton_Click">
                         <Button.Resources>
                             <Style TargetType="Border">
                                 <Setter Property="CornerRadius" Value="5"/>
                             </Style>
                         </Button.Resources>
                     </Button>
-                    <Button x:Name="GenerateStudentsButton" Content="Generate Students" HorizontalAlignment="Left" Margin="305,251,0,0" VerticalAlignment="Top" Height="45" Width="95" FontSize="10" Click="GenerateStudentsButton_Click" RenderTransformOrigin="-0.365,0.383">
+                    <Button x:Name="GenerateStudentsButton" Content="Generate Students" HorizontalAlignment="Left" Margin="333,317,0,0" VerticalAlignment="Top" Height="45" Width="95" FontSize="10" Click="GenerateStudentsButton_Click" RenderTransformOrigin="-0.365,0.383">
                         <Button.Resources>
                             <Style TargetType="Border">
                                 <Setter Property="CornerRadius" Value="5"/>
                             </Style>
                         </Button.Resources>
                     </Button>
-                    <Button x:Name="ClearStudents" Content="Clear Students" HorizontalAlignment="Left" Margin="405,252,0,0" VerticalAlignment="Top" Height="45" Width="95" FontSize="10" Click="ClearStudents_Click" RenderTransformOrigin="0.648,0.513">
+                    <Button x:Name="ClearStudents" Content="Clear Students" HorizontalAlignment="Left" Margin="433,317,0,0" VerticalAlignment="Top" Height="45" Width="95" FontSize="10" Click="ClearStudents_Click" RenderTransformOrigin="0.853,0.54">
                         <Button.Resources>
                             <Style TargetType="Border">
+                                <Setter Property="CornerRadius" Value="5"/>
+                            </Style>
+                        </Button.Resources>
+                    </Button>
+                    <DataGrid x:Name="StudentsInfoGrid" Margin="10,173,414,88" SelectionMode="Single" SelectionChanged="StudentsInfoGrid_SelectionChanged" />
+                    <DataGrid x:Name="StudentsGroupsInfoGrid" Margin="400,173,15,87" SelectionMode="Single" SelectionChanged="StudentsGroupsInfoGrid_SelectionChanged" />
+                    <Label Content="Visitations" HorizontalAlignment="Center" Margin="0,2,0,0" VerticalAlignment="Top" Width="70"/>
+                    <Label Content="Students" HorizontalAlignment="Left" Margin="163,150,0,0" VerticalAlignment="Top" Width="70"/>
+                    <Label Content="Groups" HorizontalAlignment="Left" Margin="558,150,0,0" VerticalAlignment="Top" Width="70"/>
+                    <Button x:Name="EditStudentButton" Content="Edit Student" HorizontalAlignment="Left" Margin="233,317,0,0" VerticalAlignment="Top" Height="45" Width="95" Click="EditStudentButton_Click" >
+                        <Button.Resources>
+                            <Style TargetType="{x:Type Border}">
                                 <Setter Property="CornerRadius" Value="5"/>
                             </Style>
                         </Button.Resources>
