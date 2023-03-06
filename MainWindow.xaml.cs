@@ -218,13 +218,13 @@ namespace StudentsVisitationsWPF
 
         private async void StudentsTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            DBMethods.ClearItems(StudentsInfoGrid);
-            DBMethods.ClearItems(StudentsVisitationsInfoGrid);
-            DBMethods.ClearItems(StudentsGroupsInfoGrid);
+            StudentsInfoGrid.Items.Clear();
+            StudentsGroupsInfoGrid.Items.Clear();
+            StudentsVisitationsInfoGrid.Items.Clear();
 
             if (StudentsTextBox.Text.Trim().Length==0) 
             {
-                foreach(var student in DBMethods.db.Students.Include(stu => stu.Visitations))
+                foreach (var student in DBMethods.db.Students.Include(stu => stu.Visitations))
                 {
                     StudentsInfoGrid.Items.Add(student);
                 }
@@ -238,6 +238,8 @@ namespace StudentsVisitationsWPF
                 {
                     StudentsVisitationsInfoGrid.Items.Add(visitation);
                 }
+
+                return;
 
             }
 
@@ -275,7 +277,8 @@ namespace StudentsVisitationsWPF
 
             var groupsMatches = await DBMethods.db.Groups
                 .Include(s => s.Students)
-                .Where(s => s.Name.Contains(text)).ToListAsync();
+                .Where(s => s.Name.Contains(text) || s.Students.Any(s => s.FIO.Contains(text))
+                ).ToListAsync();
 
             if (groupsMatches.Count > 0)
             {
@@ -296,13 +299,16 @@ namespace StudentsVisitationsWPF
                 {
                     GroupsInfoGrid.Items.Add(group);
                 }
+                return;
             }
 
             var text = GroupTextBox.Text;
 
             var groupsMatches = await DBMethods.db.Groups
                 .Include(s => s.Students)
-                .Where(s => s.Name.Contains(text)).ToListAsync();
+                .Where(s => s.Name.Contains(text)
+                || s.Students.Any(s=>s.FIO.Contains(text)))
+                .ToListAsync();
 
             if (groupsMatches.Count > 0)
             {
@@ -324,6 +330,7 @@ namespace StudentsVisitationsWPF
                 {
                     SubjectsInfoGrid.Items.Add(subject);
                 }
+                return;
             }
 
             var text = SubjectsTextBox.Text;
@@ -349,6 +356,7 @@ namespace StudentsVisitationsWPF
                 {
                     VisitationsInfoGrid.Items.Add(visitation);
                 }
+                return;
             }
 
             var text = VisitationsTextBox.Text;

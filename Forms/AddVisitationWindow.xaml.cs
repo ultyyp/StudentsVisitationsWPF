@@ -67,6 +67,7 @@ namespace StudentsVisitationsWPF
             DBMethods.AddVisit(vs);
             ((MainWindow)Application.Current.MainWindow).VisitationsInfoGrid.Items.Add(vs);
             ((MainWindow)Application.Current.MainWindow).StudentsVisitationsInfoGrid.Items.Add(vs);
+            DBMethods.RefreshTables();
             MessageBox.Show("Visit Added!");
             this.Close();
         }

@@ -208,6 +208,7 @@ namespace StudentsVisitationsWPF
         {
             try
             {
+                db.Students.Include(s => s.Group).Include(s => s.Visitations);
                 await db.Students.AddAsync(student);
                 await db.SaveChangesAsync();
             }
@@ -235,6 +236,8 @@ namespace StudentsVisitationsWPF
 
         public static async void AddVisit(Visitation visit)
         {
+            db.Visitations.Include(v => v.Student);
+            db.Visitations.Include(v => v.Subject);
             await db.Visitations.AddAsync(visit);
             await db.SaveChangesAsync();
         }
@@ -247,6 +250,7 @@ namespace StudentsVisitationsWPF
 
         public static async void AddGroup(Group group)
         {
+            db.Groups.Include(g => g.Students);
             await db.Groups.AddAsync(group);
             await db.SaveChangesAsync();
         }
