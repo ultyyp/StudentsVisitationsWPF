@@ -60,28 +60,28 @@
             <TabItem Header="Groups">
                 <Grid Background="#FFE5E5E5">
                     <DataGrid Name="GroupsInfoGrid" Margin="10,10,10,78" SelectionMode="Single" />
-                    <Button x:Name="AddGroup" Content="Add Group" HorizontalAlignment="Left" Margin="197,251,0,0" VerticalAlignment="Top" Height="45" Width="95" RenderTransformOrigin="0.532,0.976" Click="AddGroup_Click">
+                    <Button x:Name="AddGroup" Content="Add Group" HorizontalAlignment="Left" Margin="185,331,0,0" VerticalAlignment="Top" Height="45" Width="95" RenderTransformOrigin="0.532,0.976" Click="AddGroup_Click">
                         <Button.Resources>
                             <Style TargetType="Border">
                                 <Setter Property="CornerRadius" Value="5"/>
                             </Style>
                         </Button.Resources>
                     </Button>
-                    <Button x:Name="GenerateGroups" Content="Generate Groups" HorizontalAlignment="Left" Margin="297,251,0,0" VerticalAlignment="Top" Height="45" Width="95" FontSize="10" RenderTransformOrigin="-0.365,0.383" Click="GenerateGroups_Click">
+                    <Button x:Name="GenerateGroups" Content="Generate Groups" HorizontalAlignment="Left" Margin="285,332,0,0" VerticalAlignment="Top" Height="45" Width="95" FontSize="10" RenderTransformOrigin="-0.365,0.383" Click="GenerateGroups_Click">
                         <Button.Resources>
                             <Style TargetType="Border">
                                 <Setter Property="CornerRadius" Value="5"/>
                             </Style>
                         </Button.Resources>
                     </Button>
-                    <Button x:Name="ClearGroups" Content="Clear Groups" HorizontalAlignment="Left" Margin="397,252,0,0" VerticalAlignment="Top" Height="45" Width="95" FontSize="10" Click="ClearGroups_Click">
+                    <Button x:Name="ClearGroups" Content="Clear Groups" HorizontalAlignment="Left" Margin="385,332,0,0" VerticalAlignment="Top" Height="45" Width="95" FontSize="10" Click="ClearGroups_Click">
                         <Button.Resources>
                             <Style TargetType="Border">
                                 <Setter Property="CornerRadius" Value="5"/>
                             </Style>
                         </Button.Resources>
                     </Button>
-                    <Button x:Name="FullGroups" Content="Non Empty Groups" HorizontalAlignment="Left" Margin="497,252,0,0" VerticalAlignment="Top" Height="45" Width="95" FontSize="10" Click="FullGroups_Click">
+                    <Button x:Name="FullGroups" Content="Non Empty Groups" HorizontalAlignment="Left" Margin="485,332,0,0" VerticalAlignment="Top" Height="45" Width="95" FontSize="10" Click="FullGroups_Click">
                         <Button.Resources>
                             <Style TargetType="Border">
                                 <Setter Property="CornerRadius" Value="5"/>
@@ -94,21 +94,21 @@
             <TabItem Header="Subjects">
                 <Grid Background="#FFE5E5E5">
                     <DataGrid Name="SubjectsInfoGrid" Margin="10,10,10,78" SelectionMode="Single" />
-                    <Button x:Name="AddSubjectsButton" Content="Add Subject" HorizontalAlignment="Left" Margin="222,251,0,0" VerticalAlignment="Top" Height="48" Width="100" RenderTransformOrigin="0.532,0.976" Click="AddSubjectsButton_Click">
+                    <Button x:Name="AddSubjectsButton" Content="Add Subject" HorizontalAlignment="Left" Margin="220,331,0,0" VerticalAlignment="Top" Height="48" Width="100" RenderTransformOrigin="0.532,0.976" Click="AddSubjectsButton_Click">
                         <Button.Resources>
                             <Style TargetType="Border">
                                 <Setter Property="CornerRadius" Value="5"/>
                             </Style>
                         </Button.Resources>
                     </Button>
-                    <Button x:Name="GenerateSubjectsButton" Content="Generate Subjects" HorizontalAlignment="Left" Margin="327,252,0,0" VerticalAlignment="Top" Height="48" Width="98" FontSize="10" RenderTransformOrigin="-0.365,0.383" Click="GenerateSubjectsButton_Click">
+                    <Button x:Name="GenerateSubjectsButton" Content="Generate Subjects" HorizontalAlignment="Left" Margin="325,331,0,0" VerticalAlignment="Top" Height="48" Width="98" FontSize="10" RenderTransformOrigin="-0.365,0.383" Click="GenerateSubjectsButton_Click">
                         <Button.Resources>
                             <Style TargetType="Border">
                                 <Setter Property="CornerRadius" Value="5"/>
                             </Style>
                         </Button.Resources>
                     </Button>
-                    <Button x:Name="ClearSubjectsButton" Content="Clear Subjects" HorizontalAlignment="Left" Margin="430,252,0,0" VerticalAlignment="Top" Height="49" Width="92" FontSize="10" Click="ClearSubjectsButton_Click">
+                    <Button x:Name="ClearSubjectsButton" Content="Clear Subjects" HorizontalAlignment="Left" Margin="428,331,0,0" VerticalAlignment="Top" Height="49" Width="92" FontSize="10" Click="ClearSubjectsButton_Click">
                         <Button.Resources>
                             <Style TargetType="Border">
                                 <Setter Property="CornerRadius" Value="5"/>
@@ -121,28 +121,28 @@
             <TabItem Header="Visitations">
                 <Grid Background="#FFE5E5E5">
                     <DataGrid Name="VisitationsInfoGrid" Margin="10,10,10,93" SelectionMode="Single" />
-                    <Button x:Name="AddVisitationButton" Content="Add Visitation" HorizontalAlignment="Left" Margin="193,238,0,0" VerticalAlignment="Top" Height="45" Width="95" Click="AddVisitationButton_Click">
+                    <Button x:Name="AddVisitationButton" Content="Add Visitation" HorizontalAlignment="Left" Margin="195,317,0,0" VerticalAlignment="Top" Height="45" Width="95" Click="AddVisitationButton_Click">
                         <Button.Resources>
                             <Style TargetType="Border">
                                 <Setter Property="CornerRadius" Value="5"/>
                             </Style>
                         </Button.Resources>
                     </Button>
-                    <Button x:Name="GenerateVisitationsButton" Content="Generate Visitations" HorizontalAlignment="Left" Margin="293,239,0,0" VerticalAlignment="Top" Height="45" Width="95" FontSize="10" Click="GenerateVisitationsButton_Click" RenderTransformOrigin="1.681,-1.25">
+                    <Button x:Name="GenerateVisitationsButton" Content="Generate Visitations" HorizontalAlignment="Left" Margin="295,317,0,0" VerticalAlignment="Top" Height="45" Width="95" FontSize="10" Click="GenerateVisitationsButton_Click" RenderTransformOrigin="1.681,-1.25">
                         <Button.Resources>
                             <Style TargetType="Border">
                                 <Setter Property="CornerRadius" Value="5"/>
                             </Style>
                         </Button.Resources>
                     </Button>
-                    <Button x:Name="SearchVisitationButton" Content="Search Visitations" HorizontalAlignment="Left" Margin="493,239,0,0" VerticalAlignment="Top" Height="45" Width="95" FontSize="10" Click="SearchVisitationButton_Click">
+                    <Button x:Name="SearchVisitationButton" Content="Search Visitations" HorizontalAlignment="Left" Margin="495,317,0,0" VerticalAlignment="Top" Height="45" Width="95" FontSize="10" Click="SearchVisitationButton_Click">
                         <Button.Resources>
                             <Style TargetType="Border">
                                 <Setter Property="CornerRadius" Value="5"/>
                             </Style>
                         </Button.Resources>
                     </Button>
-                    <Button x:Name="ClearVisitations" Content="Clear Visitations" HorizontalAlignment="Left" Margin="393,239,0,0" VerticalAlignment="Top" Height="45" Width="95" FontSize="10" Click="ClearVisitations_Click">
+                    <Button x:Name="ClearVisitations" Content="Clear Visitations" HorizontalAlignment="Left" Margin="395,317,0,0" VerticalAlignment="Top" Height="45" Width="95" FontSize="10" Click="ClearVisitations_Click">
                         <Button.Resources>
                             <Style TargetType="Border">
                                 <Setter Property="CornerRadius" Value="5"/>

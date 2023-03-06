@@ -18,7 +18,7 @@ namespace StudentsVisitationsWPF
 {
     class DBMethods
     {
-        internal static string ConnectionString = "Data Source=G:\\ITSTEP\\SP Projects\\WPF\\StudentsVisitationsWPF\\mydatabase.db";
+        internal static string ConnectionString = "Data Source=" + ""; //Path to db
         internal static AppDbContext db = new AppDbContext();
         internal static SqliteConnection connection = new SqliteConnection(ConnectionString);
 
@@ -683,7 +683,7 @@ namespace StudentsVisitationsWPF
             var groupgrid = ((MainWindow)Application.Current.MainWindow).GroupsInfoGrid;
             var visitationsgrid = ((MainWindow)Application.Current.MainWindow).VisitationsInfoGrid;
 
-            foreach (var student in db.Students.Include(stu=>stu.Visitations))
+            foreach (var student in db.Students.Include(stu => stu.Visitations))
             {
                 studentgrid.Items.Add(student);
             }
