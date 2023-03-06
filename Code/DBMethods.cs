@@ -13,23 +13,37 @@ using Microsoft.EntityFrameworkCore.Design;
 using System.Collections.ObjectModel;
 using StudentsVisitationsWPF.Entities;
 using Bogus.DataSets;
+using System.IO;
 
 namespace StudentsVisitationsWPF
 {
     class DBMethods
     {
-        internal static string ConnectionString = "Data Source=" + ""; //Path to db
+        internal static string path = ""; //Path to db
+        internal static string ConnectionString = "Data Source=" + path;
         internal static AppDbContext db = new AppDbContext();
         internal static SqliteConnection connection = new SqliteConnection(ConnectionString);
 
         public class AppDbContext : DbContext
         {
+            
            // private const string ConnectionString = "Data Source=G:\\ITSTEP\\SP Projects\\WPF\\StudentsVisitationsWPF\\mydatabase.db";
 
             protected override void OnConfiguring(
                 DbContextOptionsBuilder optionsBuilder)
             {
-                optionsBuilder.UseSqlite(ConnectionString);
+                if(path.Trim().Length == 0) 
+                { 
+                    MessageBox.Show("Please enter a path to the database in DBMethods line 21!");
+                    Environment.Exit(0);
+                }
+                optionsBuilder
+                    .UseSqlite(ConnectionString)
+                    .LogTo(line =>
+                    {
+                        File.AppendAllText(
+                            "mydatabaselog.txt", line + Environment.NewLine);
+                    }); ;
             }
 
             public DbSet<Student> Students => Set<Student>();

@@ -23,6 +23,7 @@ using StudentsVisitationsWPF.Forms;
 using StudentsVisitationsWPF.Entities;
 using System.Windows.Markup;
 using System.Windows.Controls.Primitives;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace StudentsVisitationsWPF
 {
@@ -37,17 +38,20 @@ namespace StudentsVisitationsWPF
         {
             InitializeComponent();
             Language = XmlLanguage.GetLanguage("en-UK");
-            
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            var connection = (SqliteConnection) DBMethods.db.Database.GetDbConnection();
+            connection.CreateCollation("NOCASE", (x, y) => string.Compare(x, y, ignoreCase: true));
+
             StudentsInfoGrid.BeginningEdit += (s, ss) => ss.Cancel = true; //Fix for crashes
             StudentsVisitationsInfoGrid.BeginningEdit += (s, ss) => ss.Cancel = true;
             StudentsGroupsInfoGrid.BeginningEdit += (s, ss) => ss.Cancel = true;
             SubjectsInfoGrid.BeginningEdit += (s, ss) => ss.Cancel = true;
             VisitationsInfoGrid.BeginningEdit += (s, ss) => ss.Cancel = true;
             GroupsInfoGrid.BeginningEdit += (s, ss) => ss.Cancel = true;
+
             DBMethods.CreateStudentColumns();
             DBMethods.CreateGroupsColumns();
             DBMethods.CreateStudentsGroupsColumns();
@@ -203,7 +207,7 @@ namespace StudentsVisitationsWPF
                 var selectedGroup = (Group)StudentsGroupsInfoGrid.SelectedItem;
                 DBMethods.ClearItems(StudentsInfoGrid);
 
-                if(selectedGroup.Students== null) { return; }
+                if (selectedGroup.Students== null) { return; }
 
                 foreach (var student in selectedGroup.Students)
                 {
@@ -212,7 +216,159 @@ namespace StudentsVisitationsWPF
             }
         }
 
-        
+        private async void StudentsTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            DBMethods.ClearItems(StudentsInfoGrid);
+            DBMethods.ClearItems(StudentsVisitationsInfoGrid);
+            DBMethods.ClearItems(StudentsGroupsInfoGrid);
+
+            if (StudentsTextBox.Text.Trim().Length==0) 
+            {
+                foreach(var student in DBMethods.db.Students.Include(stu => stu.Visitations))
+                {
+                    StudentsInfoGrid.Items.Add(student);
+                }
+
+                foreach (var group in DBMethods.db.Groups.Include(g => g.Students))
+                {
+                    StudentsGroupsInfoGrid.Items.Add(group);
+                }
+
+                foreach (var visitation in DBMethods.db.Visitations.Include(v => v.Student).Include(v => v.Subject))
+                {
+                    StudentsVisitationsInfoGrid.Items.Add(visitation);
+                }
+
+            }
+
+            var text = StudentsTextBox.Text;
+            
+            var studentMatches = await DBMethods.db.Students
+                    .Include(s=>s.Visitations)
+                    .Include(s=>s.Group)
+                    .Where(s => s.FIO
+                    .Contains(text)).ToListAsync();
+
+            
+
+            if(studentMatches.Count>0)
+            {
+                foreach (var student in studentMatches)
+                {
+                    StudentsInfoGrid.Items.Add(student);
+                }
+            }
+            
+            var visitationsMatches = await DBMethods.db.Visitations
+                .Include(s=>s.Student)
+                .Include(s=>s.Subject)
+                .Where(s => s.Student.FIO.Contains(text) 
+                        || s.Subject.Name.Contains(text)).ToListAsync();
+
+            if(visitationsMatches.Count > 0)
+            {
+                foreach(var visit in visitationsMatches)
+                {
+                    StudentsVisitationsInfoGrid.Items.Add(visit);
+                }
+            }
+
+            var groupsMatches = await DBMethods.db.Groups
+                .Include(s => s.Students)
+                .Where(s => s.Name.Contains(text)).ToListAsync();
+
+            if (groupsMatches.Count > 0)
+            {
+                foreach (var group in groupsMatches)
+                {
+                    StudentsGroupsInfoGrid.Items.Add(group);
+                }
+            }
+        }
+
+        private async void GroupTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            DBMethods.ClearItems(GroupsInfoGrid);
+
+            if (GroupTextBox.Text.Trim().Length == 0)
+            {
+                foreach (var group in DBMethods.db.Groups.Include(g => g.Students))
+                {
+                    GroupsInfoGrid.Items.Add(group);
+                }
+            }
+
+            var text = GroupTextBox.Text;
+
+            var groupsMatches = await DBMethods.db.Groups
+                .Include(s => s.Students)
+                .Where(s => s.Name.Contains(text)).ToListAsync();
+
+            if (groupsMatches.Count > 0)
+            {
+                foreach (var group in groupsMatches)
+                {
+                    GroupsInfoGrid.Items.Add(group);
+                }
+            }
+
+
+        }
+
+        private async void SubjectsTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            DBMethods.ClearItems(SubjectsInfoGrid);
+            if (SubjectsTextBox.Text.Trim().Length == 0)
+            {
+                foreach (var subject in DBMethods.db.Subjects)
+                {
+                    SubjectsInfoGrid.Items.Add(subject);
+                }
+            }
+
+            var text = SubjectsTextBox.Text;
+
+            var subjectsMatches = await DBMethods.db.Subjects
+                .Where(s => s.Name.Contains(text)).ToListAsync();
+
+            if (subjectsMatches.Count > 0)
+            {
+                foreach (var visit in subjectsMatches)
+                {
+                    SubjectsInfoGrid.Items.Add(visit);
+                }
+            }
+        }
+
+        private async void VisitationsTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            DBMethods.ClearItems(VisitationsInfoGrid);
+            if (VisitationsTextBox.Text.Trim().Length == 0)
+            {
+                foreach (var visitation in DBMethods.db.Visitations.Include(v => v.Student).Include(v => v.Subject))
+                {
+                    VisitationsInfoGrid.Items.Add(visitation);
+                }
+            }
+
+            var text = VisitationsTextBox.Text;
+
+            var visitationsMatches = await DBMethods.db.Visitations
+                .Include(s => s.Student)
+                .Include(s => s.Subject)
+                .Where(s => s.Student.FIO.Contains(text) 
+                    || s.Subject.Name.Contains(text)).ToListAsync();
+
+            if (visitationsMatches.Count > 0)
+            {
+                foreach (var visit in visitationsMatches)
+                {
+                    VisitationsInfoGrid.Items.Add(visit);
+                }
+            }
+
+
+        }
     }
 }
 
