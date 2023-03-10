@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace StudentsVisitationsWPF.Entities
 {
+    [Index(nameof(FIO))]
     public class Student
     {
         public Guid Id { get; set; }

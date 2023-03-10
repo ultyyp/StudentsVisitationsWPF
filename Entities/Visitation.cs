@@ -4,9 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using static StudentsVisitationsWPF.DBMethods;
+using Microsoft.EntityFrameworkCore;
 
 namespace StudentsVisitationsWPF.Entities
 {
+    [Index(nameof(Date))]
     public class Visitation
     {
         public Guid Id { get; set; }

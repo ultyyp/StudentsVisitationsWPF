@@ -26,9 +26,6 @@ namespace StudentsVisitationsWPF
 
         public class AppDbContext : DbContext
         {
-            
-           // private const string ConnectionString = "Data Source=G:\\ITSTEP\\SP Projects\\WPF\\StudentsVisitationsWPF\\mydatabase.db";
-
             protected override void OnConfiguring(
                 DbContextOptionsBuilder optionsBuilder)
             {

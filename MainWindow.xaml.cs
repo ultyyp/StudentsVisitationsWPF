@@ -245,15 +245,17 @@ namespace StudentsVisitationsWPF
 
             var text = StudentsTextBox.Text;
             
+            
             var studentMatches = await DBMethods.db.Students
                     .Include(s=>s.Visitations)
                     .Include(s=>s.Group)
-                    .Where(s => s.FIO
-                    .Contains(text)).ToListAsync();
+                    .Where(s => EF.Functions.Like(s.FIO, $"%{text}%"))
+                    .ToListAsync();
 
-            
 
-            if(studentMatches.Count>0)
+
+
+            if (studentMatches.Count>0)
             {
                 foreach (var student in studentMatches)
                 {
@@ -264,8 +266,8 @@ namespace StudentsVisitationsWPF
             var visitationsMatches = await DBMethods.db.Visitations
                 .Include(s=>s.Student)
                 .Include(s=>s.Subject)
-                .Where(s => s.Student.FIO.Contains(text) 
-                        || s.Subject.Name.Contains(text)).ToListAsync();
+                .Where(s => EF.Functions.Like(s.Student!.FIO, $"%{text}%")
+                        || EF.Functions.Like(s.Subject!.Name, $"%{text}%")).ToListAsync();
 
             if(visitationsMatches.Count > 0)
             {
@@ -277,7 +279,8 @@ namespace StudentsVisitationsWPF
 
             var groupsMatches = await DBMethods.db.Groups
                 .Include(s => s.Students)
-                .Where(s => s.Name.Contains(text) || s.Students.Any(s => s.FIO.Contains(text))
+                .Where(s => EF.Functions.Like(s.Name, $"%{text}%")
+                || s.Students.Any(s => EF.Functions.Like(s.FIO, $"%{text}%"))
                 ).ToListAsync();
 
             if (groupsMatches.Count > 0)
@@ -306,8 +309,8 @@ namespace StudentsVisitationsWPF
 
             var groupsMatches = await DBMethods.db.Groups
                 .Include(s => s.Students)
-                .Where(s => s.Name.Contains(text)
-                || s.Students.Any(s=>s.FIO.Contains(text)))
+                .Where(s => EF.Functions.Like(s.Name, $"%{text}%")
+                || s.Students.Any(s=> EF.Functions.Like(s.FIO, $"%{text}%")))
                 .ToListAsync();
 
             if (groupsMatches.Count > 0)
@@ -336,7 +339,7 @@ namespace StudentsVisitationsWPF
             var text = SubjectsTextBox.Text;
 
             var subjectsMatches = await DBMethods.db.Subjects
-                .Where(s => s.Name.Contains(text)).ToListAsync();
+                .Where(s => EF.Functions.Like(s.Name, $"%{text}%")).ToListAsync();
 
             if (subjectsMatches.Count > 0)
             {
@@ -364,8 +367,8 @@ namespace StudentsVisitationsWPF
             var visitationsMatches = await DBMethods.db.Visitations
                 .Include(s => s.Student)
                 .Include(s => s.Subject)
-                .Where(s => s.Student.FIO.Contains(text) 
-                    || s.Subject.Name.Contains(text)).ToListAsync();
+                .Where(s => EF.Functions.Like(s.Student.FIO, $"%{text}%")
+                    || EF.Functions.Like(s.Subject.Name, $"%{text}%")).ToListAsync();
 
             if (visitationsMatches.Count > 0)
             {
