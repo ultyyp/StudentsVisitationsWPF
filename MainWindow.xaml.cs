@@ -175,22 +175,18 @@ namespace StudentsVisitationsWPF
 
         private void StudentsInfoGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if(StudentsInfoGrid.SelectedItem != null)
-            {
-                var selectedStudent = (Student)StudentsInfoGrid.SelectedItem;
-                if (selectedStudent.Visitations == null) { return; }
-                StudentsVisitationsInfoGrid.ItemsSource = selectedStudent.Visitations;
-            }
+            if (StudentsInfoGrid.SelectedItem is not Student) { return; }
+            var selectedStudent = (Student)StudentsInfoGrid.SelectedItem;
+            if (selectedStudent.Visitations == null) { return; }
+            StudentsVisitationsInfoGrid.ItemsSource = selectedStudent.Visitations;
         }
 
         private void StudentsGroupsInfoGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if(StudentsGroupsInfoGrid.SelectedItem!= null)
-            {
-                var selectedGroup = (Group)StudentsGroupsInfoGrid.SelectedItem;
-                if (selectedGroup.Students == null) { return; }
-                StudentsInfoGrid.ItemsSource = selectedGroup.Students;
-            }
+            if(StudentsGroupsInfoGrid.SelectedItem is not Group) { return; }
+            var selectedGroup = (Group)StudentsGroupsInfoGrid.SelectedItem;
+            if (selectedGroup.Students == null) { return; }
+            StudentsInfoGrid.ItemsSource = selectedGroup.Students;
         }
 
         private async void StudentsTextBox_TextChanged(object sender, TextChangedEventArgs e)

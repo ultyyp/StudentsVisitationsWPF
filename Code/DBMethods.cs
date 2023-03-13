@@ -56,8 +56,8 @@ namespace StudentsVisitationsWPF
             try
             {
                 //await using (var db = new AppDbContext())
-                return db.Visitations.Include(visit => visit.Student)
-                    .Include(visit => visit.Subject).ToArray();
+                return await db.Visitations.Include(visit => visit.Student)
+                    .Include(visit => visit.Subject).ToArrayAsync();
             }
             catch
             {
@@ -89,7 +89,7 @@ namespace StudentsVisitationsWPF
         {
             try
             {
-                return db.Students.Include(s => s.Group).ToArray();  
+                return await db.Students.Include(s => s.Group).ToArrayAsync();
             }
             catch
             {
@@ -103,8 +103,7 @@ namespace StudentsVisitationsWPF
         {
             try
             {
-                List<Subject> subjects = await db.Subjects.ToListAsync();
-                return subjects.ToArray();
+                return await db.Subjects.ToArrayAsync();
             }
             catch
             {
@@ -118,7 +117,7 @@ namespace StudentsVisitationsWPF
         {
             try
             {
-                return db.Groups.Include(g => g.Students).ToArray();
+                return await db.Groups.Include(g => g.Students).ToArrayAsync();
             }
             catch
             {
@@ -441,78 +440,46 @@ namespace StudentsVisitationsWPF
 
         public async void ClearStudents()
         {
-
             try
             {
-                foreach (var item in db.Students)
-                {
-                    db.Students.Remove(item);
-                }
-                await db.SaveChangesAsync();
+                await db.Database.ExecuteSqlRawAsync("DELETE FROM Students");
                 Refresh("all");
-                MessageBox.Show("Students Cleared!");
+                MessageBox.Show("Cleared!");
             }
-            catch (Exception ex)
+            catch
             {
-                MessageBox.Show("Please clear visitations first!");
+                MessageBox.Show("Clear visitations first!");
             }
             
         }
 
         public async void ClearVisitations()
         {
-            try
-            {
-                foreach (var item in db.Visitations)
-                {
-                    db.Visitations.Remove(item);
-                }
-                await db.SaveChangesAsync();
-                Refresh("all");
-                MessageBox.Show("Visitations Cleared!");
-            }
-            catch(Exception ex) 
-            {
-                MessageBox.Show(ex.ToString());
-            }
+            await db.Database.ExecuteSqlRawAsync("DELETE FROM Visitations");
+            Refresh("all");
+            MessageBox.Show("Cleared!");
         }
 
         public async void ClearSubjects()
         {
-            try
-            {
-                foreach (var item in db.Subjects)
-                {
-                    db.Subjects.Remove(item);
-                }
-                await db.SaveChangesAsync();
-                Refresh("all");
-                MessageBox.Show("Subjects Cleared!");
-            }
-            catch(Exception ex) 
-            {
-                MessageBox.Show("Please clear visitations first!");
-            }
-            
+            await db.Database.ExecuteSqlRawAsync("DELETE FROM Subjects");
+            Refresh("all");
+            MessageBox.Show("Cleared!");
         }
 
         public async void ClearGroups()
         {
             try
             {
-                foreach (var item in db.Groups)
-                {
-                    db.Groups.Remove(item);
-                }
-                await db.SaveChangesAsync();
+                await db.Database.ExecuteSqlRawAsync("DELETE FROM Groups");
                 Refresh("all");
-                MessageBox.Show("Groups Cleared!");
+                MessageBox.Show("Cleared!");
             }
-            catch (Exception ex)
+            catch
             {
-                MessageBox.Show("Please clear visitations/students first!");
+                MessageBox.Show("Clear students first!");
             }
-
+            
         }
 
 
