@@ -41,8 +41,7 @@ namespace StudentsVisitationsWPF.Forms
 
             subject.Name= name;
             DBMethods.AddSubject(subject);
-            ((MainWindow)Application.Current.MainWindow).SubjectsInfoGrid.Items.Add(subject);
-            DBMethods.RefreshTables();
+            DBMethods.Refresh("all");
             MessageBox.Show("Subject Added!");
             this.Close();
             

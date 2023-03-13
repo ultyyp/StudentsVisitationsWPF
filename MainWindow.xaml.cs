@@ -24,6 +24,7 @@ using StudentsVisitationsWPF.Entities;
 using System.Windows.Markup;
 using System.Windows.Controls.Primitives;
 using static System.Net.Mime.MediaTypeNames;
+using StudentsVisitationsWPF.Code;
 
 namespace StudentsVisitationsWPF
 {
@@ -52,14 +53,8 @@ namespace StudentsVisitationsWPF
             VisitationsInfoGrid.BeginningEdit += (s, ss) => ss.Cancel = true;
             GroupsInfoGrid.BeginningEdit += (s, ss) => ss.Cancel = true;
 
-            DBMethods.CreateStudentColumns();
-            DBMethods.CreateGroupsColumns();
-            DBMethods.CreateStudentsGroupsColumns();
-            DBMethods.CreateSubjectColumns();
-            DBMethods.CreateVisitationColumns();
-            DBMethods.CreateStudentsVisitationColumns();
-
-            DBMethods.FillAllGrids();
+            DataGridMethods.InitialiseGrids();
+            DBMethods.Refresh("all");
         }
 
         private void SearchVisitationButton_Click(object sender, RoutedEventArgs e)
@@ -145,7 +140,7 @@ namespace StudentsVisitationsWPF
 
         private void ClearSubjectsButton_Click(object sender, RoutedEventArgs e)
         {
-            DBMethods.ClearSubjects(); 
+            DBMethods.ClearSubjects();
         }
 
         private void ClearGroups_Click(object sender, RoutedEventArgs e)
@@ -170,13 +165,7 @@ namespace StudentsVisitationsWPF
             else if (await DBMethods.GetGroupsCount() >= 1)
             {
                 var groups = await DBMethods.GetNonEmptyGroups();
-                DBMethods.CreateGroupsColumns();
-                GroupsInfoGrid.Items.Clear();
-
-                foreach (var group in groups)
-                {
-                    GroupsInfoGrid.Items.Add(group);
-                }
+                GroupsInfoGrid.ItemsSource = groups;
             }
             else
             {
@@ -189,14 +178,8 @@ namespace StudentsVisitationsWPF
             if(StudentsInfoGrid.SelectedItem != null)
             {
                 var selectedStudent = (Student)StudentsInfoGrid.SelectedItem;
-                DBMethods.ClearItems(StudentsVisitationsInfoGrid);
-
-                if(selectedStudent.Visitations == null) { return; }
-
-                foreach (var visit in selectedStudent.Visitations)
-                {
-                    StudentsVisitationsInfoGrid.Items.Add(visit);
-                }
+                if (selectedStudent.Visitations == null) { return; }
+                StudentsVisitationsInfoGrid.ItemsSource = selectedStudent.Visitations;
             }
         }
 
@@ -205,77 +188,88 @@ namespace StudentsVisitationsWPF
             if(StudentsGroupsInfoGrid.SelectedItem!= null)
             {
                 var selectedGroup = (Group)StudentsGroupsInfoGrid.SelectedItem;
-                DBMethods.ClearItems(StudentsInfoGrid);
-
-                if (selectedGroup.Students== null) { return; }
-
-                foreach (var student in selectedGroup.Students)
-                {
-                    StudentsInfoGrid.Items.Add(student);
-                }
+                if (selectedGroup.Students == null) { return; }
+                StudentsInfoGrid.ItemsSource = selectedGroup.Students;
             }
         }
 
         private async void StudentsTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            StudentsInfoGrid.Items.Clear();
-            StudentsGroupsInfoGrid.Items.Clear();
-            StudentsVisitationsInfoGrid.Items.Clear();
-
-            if (StudentsTextBox.Text.Trim().Length==0) 
+            bool isValidText = await DebounceMethods.DebounceTextBox(250, StudentsTextBox, StudentsTextBox.Text);
+            if (isValidText ==  false) 
             {
-                foreach (var student in DBMethods.db.Students.Include(stu => stu.Visitations))
-                {
-                    StudentsInfoGrid.Items.Add(student);
-                }
+                return;
+            }
 
-                foreach (var group in DBMethods.db.Groups.Include(g => g.Students))
-                {
-                    StudentsGroupsInfoGrid.Items.Add(group);
-                }
+            SearchStudents();
+        }
 
-                foreach (var visitation in DBMethods.db.Visitations.Include(v => v.Student).Include(v => v.Subject))
-                {
-                    StudentsVisitationsInfoGrid.Items.Add(visitation);
-                }
+        private async void GroupTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            bool isValidText = await DebounceMethods.DebounceTextBox(250, GroupTextBox, GroupTextBox.Text);
+            if (isValidText == false)
+            {
+                return;
+            }
+
+            SearchGroups();
+        }
+
+        private async void SubjectsTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            bool isValidText = await DebounceMethods.DebounceTextBox(250, SubjectsTextBox, SubjectsTextBox.Text);
+            if (isValidText == false)
+            {
+                return;
+            }
+
+            SearchSubjects();
+        }
+
+        private async void VisitationsTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            bool isValidText = await DebounceMethods.DebounceTextBox(250, VisitationsTextBox, VisitationsTextBox.Text);
+            if (isValidText == false)
+            {
+                return;
+            }
+
+            SearchVisitations();
+
+
+        }
+
+        public async void SearchStudents()
+        {
+            if (StudentsTextBox.Text.Trim().Length == 0)
+            {
+                StudentsInfoGrid.ItemsSource = await DBMethods.db.Students.Include(stu => stu.Visitations).ToListAsync();
+
+                StudentsGroupsInfoGrid.ItemsSource = await DBMethods.db.Groups.Include(g => g.Students).ToListAsync();
+
+                StudentsVisitationsInfoGrid.ItemsSource = await DBMethods.db.Visitations.Include(v => v.Student).Include(v => v.Subject).ToListAsync();
 
                 return;
-
             }
 
             var text = StudentsTextBox.Text;
-            
-            
+
+
             var studentMatches = await DBMethods.db.Students
-                    .Include(s=>s.Visitations)
-                    .Include(s=>s.Group)
+                    .Include(s => s.Visitations)
+                    .Include(s => s.Group)
                     .Where(s => EF.Functions.Like(s.FIO, $"%{text}%"))
                     .ToListAsync();
 
+            StudentsInfoGrid.ItemsSource = studentMatches;
 
-
-
-            if (studentMatches.Count>0)
-            {
-                foreach (var student in studentMatches)
-                {
-                    StudentsInfoGrid.Items.Add(student);
-                }
-            }
-            
             var visitationsMatches = await DBMethods.db.Visitations
-                .Include(s=>s.Student)
-                .Include(s=>s.Subject)
+                .Include(s => s.Student)
+                .Include(s => s.Subject)
                 .Where(s => EF.Functions.Like(s.Student!.FIO, $"%{text}%")
                         || EF.Functions.Like(s.Subject!.Name, $"%{text}%")).ToListAsync();
 
-            if(visitationsMatches.Count > 0)
-            {
-                foreach(var visit in visitationsMatches)
-                {
-                    StudentsVisitationsInfoGrid.Items.Add(visit);
-                }
-            }
+            StudentsVisitationsInfoGrid.ItemsSource = visitationsMatches;
 
             var groupsMatches = await DBMethods.db.Groups
                 .Include(s => s.Students)
@@ -283,82 +277,14 @@ namespace StudentsVisitationsWPF
                 || s.Students.Any(s => EF.Functions.Like(s.FIO, $"%{text}%"))
                 ).ToListAsync();
 
-            if (groupsMatches.Count > 0)
-            {
-                foreach (var group in groupsMatches)
-                {
-                    StudentsGroupsInfoGrid.Items.Add(group);
-                }
-            }
+            StudentsGroupsInfoGrid.ItemsSource = groupsMatches;
         }
 
-        private async void GroupTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        public async void SearchVisitations()
         {
-            DBMethods.ClearItems(GroupsInfoGrid);
-
-            if (GroupTextBox.Text.Trim().Length == 0)
-            {
-                foreach (var group in DBMethods.db.Groups.Include(g => g.Students))
-                {
-                    GroupsInfoGrid.Items.Add(group);
-                }
-                return;
-            }
-
-            var text = GroupTextBox.Text;
-
-            var groupsMatches = await DBMethods.db.Groups
-                .Include(s => s.Students)
-                .Where(s => EF.Functions.Like(s.Name, $"%{text}%")
-                || s.Students.Any(s=> EF.Functions.Like(s.FIO, $"%{text}%")))
-                .ToListAsync();
-
-            if (groupsMatches.Count > 0)
-            {
-                foreach (var group in groupsMatches)
-                {
-                    GroupsInfoGrid.Items.Add(group);
-                }
-            }
-
-
-        }
-
-        private async void SubjectsTextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            DBMethods.ClearItems(SubjectsInfoGrid);
-            if (SubjectsTextBox.Text.Trim().Length == 0)
-            {
-                foreach (var subject in DBMethods.db.Subjects)
-                {
-                    SubjectsInfoGrid.Items.Add(subject);
-                }
-                return;
-            }
-
-            var text = SubjectsTextBox.Text;
-
-            var subjectsMatches = await DBMethods.db.Subjects
-                .Where(s => EF.Functions.Like(s.Name, $"%{text}%")).ToListAsync();
-
-            if (subjectsMatches.Count > 0)
-            {
-                foreach (var visit in subjectsMatches)
-                {
-                    SubjectsInfoGrid.Items.Add(visit);
-                }
-            }
-        }
-
-        private async void VisitationsTextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            DBMethods.ClearItems(VisitationsInfoGrid);
             if (VisitationsTextBox.Text.Trim().Length == 0)
             {
-                foreach (var visitation in DBMethods.db.Visitations.Include(v => v.Student).Include(v => v.Subject))
-                {
-                    VisitationsInfoGrid.Items.Add(visitation);
-                }
+                VisitationsInfoGrid.ItemsSource = await DBMethods.db.Visitations.Include(v => v.Student).Include(v => v.Subject).ToListAsync();
                 return;
             }
 
@@ -372,15 +298,54 @@ namespace StudentsVisitationsWPF
 
             if (visitationsMatches.Count > 0)
             {
-                foreach (var visit in visitationsMatches)
-                {
-                    VisitationsInfoGrid.Items.Add(visit);
-                }
+                VisitationsInfoGrid.ItemsSource = visitationsMatches;
+            }
+        }
+
+        public async void SearchSubjects()
+        {
+            if (SubjectsTextBox.Text.Trim().Length == 0)
+            {
+                SubjectsInfoGrid.ItemsSource = await DBMethods.db.Subjects.ToListAsync();
+                return;
             }
 
+            var text = SubjectsTextBox.Text;
 
+            var subjectsMatches = await DBMethods.db.Subjects
+                .Where(s => EF.Functions.Like(s.Name, $"%{text}%")).ToListAsync();
+
+            if (subjectsMatches.Count > 0)
+            {
+                SubjectsInfoGrid.ItemsSource = subjectsMatches;
+            }
         }
+
+        public async void SearchGroups()
+        {
+            if (GroupTextBox.Text.Trim().Length == 0)
+            {
+                GroupsInfoGrid.ItemsSource = await DBMethods.db.Groups.Include(g => g.Students).ToListAsync();
+                return;
+            }
+
+            var text = GroupTextBox.Text;
+
+            var groupsMatches = await DBMethods.db.Groups
+                .Include(s => s.Students)
+                .Where(s => EF.Functions.Like(s.Name, $"%{text}%")
+                || s.Students.Any(s => EF.Functions.Like(s.FIO, $"%{text}%")))
+                .ToListAsync();
+
+            if (groupsMatches.Count > 0)
+            {
+                GroupsInfoGrid.ItemsSource = groupsMatches;
+            }
+        }
+
     }
+
+   
 }
 
 

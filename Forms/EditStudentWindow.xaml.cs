@@ -85,9 +85,8 @@ namespace StudentsVisitationsWPF.Forms
 
 
             DBMethods.EditStudent(selectedStudent.Id ,st);
-            DBMethods.RefreshTables();
+            DBMethods.Refresh("all");
          
-            
             MessageBox.Show("Student Edited!");
             this.Close();
         }

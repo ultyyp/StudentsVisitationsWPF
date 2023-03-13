@@ -24,6 +24,7 @@ namespace StudentsVisitationsWPF
         internal static AppDbContext db = new AppDbContext();
         internal static SqliteConnection connection = new SqliteConnection(ConnectionString);
 
+
         public class AppDbContext : DbContext
         {
             protected override void OnConfiguring(
@@ -201,6 +202,17 @@ namespace StudentsVisitationsWPF
 
         }
 
+       
+        public static async void EditStudent(Guid guid, Student st)
+        {
+            var student = db.Students.Include(s => s.Group).Include(s => s.Visitations).Where(s => s.Id == guid).ToArray()[0];
+            student.FIO = st.FIO;
+            student.DOB = st.DOB;
+            student.Email = st.Email;
+            student.Group = st.Group;
+            await db.SaveChangesAsync();
+        }
+
         public static async void AddStudent(Student student)
         {
             try
@@ -208,27 +220,12 @@ namespace StudentsVisitationsWPF
                 db.Students.Include(s => s.Group).Include(s => s.Visitations);
                 await db.Students.AddAsync(student);
                 await db.SaveChangesAsync();
+                Refresh("all");
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"{ex}");
             }
-        }
-
-        public static async void EditStudent(Guid guid, Student st)
-        {
-            foreach(var student in db.Students.Include(s=>s.Group).Include(s=>s.Visitations))
-            {
-                if(student.Id == guid)
-                {
-                    student.FIO = st.FIO;
-                    student.DOB = st.DOB;
-                    student.Email = st.Email;
-                    student.Group = st.Group;
-                }
-            }
-
-            await db.SaveChangesAsync();
         }
 
         public static async void AddVisit(Visitation visit)
@@ -237,12 +234,14 @@ namespace StudentsVisitationsWPF
             db.Visitations.Include(v => v.Subject);
             await db.Visitations.AddAsync(visit);
             await db.SaveChangesAsync();
+            Refresh("all");
         }
 
         public static async void AddSubject(Subject subject)
         {
             await db.Subjects.AddAsync(subject);
             await db.SaveChangesAsync();
+            Refresh("all");
         }
 
         public static async void AddGroup(Group group)
@@ -250,6 +249,7 @@ namespace StudentsVisitationsWPF
             db.Groups.Include(g => g.Students);
             await db.Groups.AddAsync(group);
             await db.SaveChangesAsync();
+            Refresh("all");
         }
 
         public static bool StudentTableExists()
@@ -316,11 +316,12 @@ namespace StudentsVisitationsWPF
                     Email = randominfo.Email
                 };
                 student.Group = groups[randomnum];
-                ((MainWindow)Application.Current.MainWindow).StudentsInfoGrid.Items.Add(student);
+                Refresh("all");
                 AddStudent(student);
                 
             }
-            RefreshTables();
+
+
             MessageBox.Show("Students Generated!");
 
         }
@@ -353,11 +354,10 @@ namespace StudentsVisitationsWPF
                     DateOnly bd = stu[randomnum-1].DOB;
                     visitation.Date = new DateOnly(randomiser.Int(bd.Year - 1, 2022), randomiser.Int(bd.Month, 12), randomiser.Int(bd.Day, 29));
                     AddVisit(visitation);
-                    ((MainWindow)Application.Current.MainWindow).VisitationsInfoGrid.Items.Add(visitation);
-                    ((MainWindow)Application.Current.MainWindow).StudentsVisitationsInfoGrid.Items.Add(visitation);
                     stu[randomnum - 1].Visitations.Add(visitation); //Adding the visitation to the student
                 }
-                RefreshTables();
+
+                Refresh("all");
                 MessageBox.Show("Visitations Generated!");
 
             }
@@ -393,9 +393,8 @@ namespace StudentsVisitationsWPF
                     Name= randominfo.Name
                 };
                 AddSubject(subject);
-                ((MainWindow)Application.Current.MainWindow).SubjectsInfoGrid.Items.Add(subject);
             }
-            RefreshTables();
+            Refresh("all");
             MessageBox.Show("Subjects Generated!");
 
         }
@@ -419,14 +418,9 @@ namespace StudentsVisitationsWPF
                     CreationDate = DateTime.Now
                 };
                 AddGroup(group);
-                ((MainWindow)Application.Current.MainWindow).GroupsInfoGrid.Items.Add(group);
-                ((MainWindow)Application.Current.MainWindow).StudentsGroupsInfoGrid.Items.Add(group);
+                Refresh("all");
             }
-            RefreshTables();
             MessageBox.Show("Groups Generated!");
-
-
-
         }
 
         public static bool StudentExists(int id)
@@ -454,10 +448,9 @@ namespace StudentsVisitationsWPF
                 {
                     db.Students.Remove(item);
                 }
-                db.SaveChanges();
+                await db.SaveChangesAsync();
+                Refresh("all");
                 MessageBox.Show("Students Cleared!");
-                ClearItems(((MainWindow)Application.Current.MainWindow).StudentsInfoGrid);
-                RefreshTables();
             }
             catch (Exception ex)
             {
@@ -468,15 +461,20 @@ namespace StudentsVisitationsWPF
 
         public static async void ClearVisitations()
         {
-            foreach (var item in db.Visitations)
+            try
             {
-                db.Visitations.Remove(item);
+                foreach (var item in db.Visitations)
+                {
+                    db.Visitations.Remove(item);
+                }
+                await db.SaveChangesAsync();
+                Refresh("all");
+                MessageBox.Show("Visitations Cleared!");
             }
-            db.SaveChanges();
-            MessageBox.Show("Visitations Cleared!");
-            ClearItems(((MainWindow)Application.Current.MainWindow).VisitationsInfoGrid);
-            ClearItems(((MainWindow)Application.Current.MainWindow).StudentsVisitationsInfoGrid);
-            RefreshTables();
+            catch(Exception ex) 
+            {
+                MessageBox.Show(ex.ToString());
+            }
         }
 
         public static async void ClearSubjects()
@@ -487,10 +485,9 @@ namespace StudentsVisitationsWPF
                 {
                     db.Subjects.Remove(item);
                 }
-                db.SaveChanges();
+                await db.SaveChangesAsync();
+                Refresh("all");
                 MessageBox.Show("Subjects Cleared!");
-                ClearItems(((MainWindow)Application.Current.MainWindow).SubjectsInfoGrid);
-                RefreshTables();
             }
             catch(Exception ex) 
             {
@@ -507,11 +504,9 @@ namespace StudentsVisitationsWPF
                 {
                     db.Groups.Remove(item);
                 }
-                db.SaveChanges();
+                await db.SaveChangesAsync();
+                Refresh("all");
                 MessageBox.Show("Groups Cleared!");
-                ClearItems(((MainWindow)Application.Current.MainWindow).GroupsInfoGrid);
-                ClearItems(((MainWindow)Application.Current.MainWindow).StudentsGroupsInfoGrid);
-                RefreshTables();
             }
             catch (Exception ex)
             {
@@ -520,176 +515,8 @@ namespace StudentsVisitationsWPF
 
         }
 
-        public static void ClearColumns(DataGrid dataGrid)
-        {
-            for (int i = dataGrid.Columns.Count - 1; i >= 0; i--)
-            {
-                dataGrid.Columns.Remove(dataGrid.Columns[i]);
-            }
 
-        }
-
-        public static void ClearItems(DataGrid dataGrid)
-        {
-            for (int i = dataGrid.Items.Count - 1; i >= 0; i--)
-            {
-                dataGrid.Items.Remove(dataGrid.Items[i]);
-            }
-        }
-
-        
-
-        public static void CreateVisitationColumns()
-        {
-            ClearColumns(((MainWindow)Application.Current.MainWindow).VisitationsInfoGrid);
-            ClearItems(((MainWindow)Application.Current.MainWindow).VisitationsInfoGrid);
-            
-            var col2 = new DataGridTextColumn();
-            col2.Header = "Student";
-            col2.Binding = new Binding("Student");
-            col2.IsReadOnly = false;
-            ((MainWindow)Application.Current.MainWindow).VisitationsInfoGrid.Columns.Add(col2);
-
-            var col3 = new DataGridTextColumn();
-            col3.Header = "Subject";
-            col3.Binding = new Binding("Subject");
-            col3.IsReadOnly = false;
-            ((MainWindow)Application.Current.MainWindow).VisitationsInfoGrid.Columns.Add(col3);
-
-            var col4 = new DataGridTextColumn();
-            col4.Header = "Date";
-            col4.Binding = new Binding("Date");
-            col4.Binding.StringFormat = "dd/MM/yyyy";
-            col4.IsReadOnly = false;
-            ((MainWindow)Application.Current.MainWindow).VisitationsInfoGrid.Columns.Add(col4);
-        }
-
-        public static void CreateStudentsVisitationColumns()
-        {
-            ClearColumns(((MainWindow)Application.Current.MainWindow).StudentsVisitationsInfoGrid);
-            ClearItems(((MainWindow)Application.Current.MainWindow).StudentsVisitationsInfoGrid);
-
-            var col2 = new DataGridTextColumn();
-            col2.Header = "Student";
-            col2.Binding = new Binding("Student");
-            col2.IsReadOnly = false;
-            ((MainWindow)Application.Current.MainWindow).StudentsVisitationsInfoGrid.Columns.Add(col2);
-
-            var col3 = new DataGridTextColumn();
-            col3.Header = "Subject";
-            col3.Binding = new Binding("Subject");
-            col3.IsReadOnly = false;
-            ((MainWindow)Application.Current.MainWindow).StudentsVisitationsInfoGrid.Columns.Add(col3);
-
-            var col4 = new DataGridTextColumn();
-            col4.Header = "Date";
-            col4.Binding = new Binding("Date");
-            col4.Binding.StringFormat = "dd/MM/yyyy";
-            col4.IsReadOnly = false;
-            ((MainWindow)Application.Current.MainWindow).StudentsVisitationsInfoGrid.Columns.Add(col4);
-        }
-
-        public static void CreateSubjectColumns()
-        {
-            ClearColumns(((MainWindow)Application.Current.MainWindow).SubjectsInfoGrid);
-
-            var col1 = new DataGridTextColumn();
-            col1.Header = "Id";
-            col1.Binding = new Binding("Id");
-            col1.IsReadOnly = false;
-            ((MainWindow)Application.Current.MainWindow).SubjectsInfoGrid.Columns.Add(col1);
-
-            var col2 = new DataGridTextColumn();
-            col2.Header = "Name";
-            col2.Binding = new Binding("Name");
-            col2.IsReadOnly = false;
-            ((MainWindow)Application.Current.MainWindow).SubjectsInfoGrid.Columns.Add(col2);
-        }
-
-        public static void CreateStudentColumns()
-        {
-            ClearColumns(((MainWindow)Application.Current.MainWindow).StudentsInfoGrid);
-
-            var col2 = new DataGridTextColumn();
-            col2.Header = "FIO";
-            col2.Binding = new Binding("FIO");
-            col2.IsReadOnly = false;
-            ((MainWindow)Application.Current.MainWindow).StudentsInfoGrid.Columns.Add(col2);
-
-            var col3 = new DataGridTextColumn();
-            col3.Header = "DOB";
-            col3.Binding = new Binding("DOB");
-            col3.Binding.StringFormat = "dd/MM/yyyy";
-            col3.IsReadOnly = false;
-            ((MainWindow)Application.Current.MainWindow).StudentsInfoGrid.Columns.Add(col3);
-
-            var col4 = new DataGridTextColumn();
-            col4.Header = "Email";
-            col4.Binding = new Binding("Email");
-            col4.IsReadOnly = false;
-            ((MainWindow)Application.Current.MainWindow).StudentsInfoGrid.Columns.Add(col4);
-
-            var col5 = new DataGridTextColumn();
-            col5.Header = "Group";
-            col5.Binding = new Binding("Group");
-            col5.IsReadOnly = false;
-            ((MainWindow)Application.Current.MainWindow).StudentsInfoGrid.Columns.Add(col5);
-
-
-        }
-
-        public static void CreateGroupsColumns()
-        {
-            ClearItems(((MainWindow)Application.Current.MainWindow).StudentsGroupsInfoGrid);
-            ClearColumns(((MainWindow)Application.Current.MainWindow).StudentsGroupsInfoGrid);
-
-            var col2 = new DataGridTextColumn();
-            col2.Header = "Name";
-            col2.Binding = new Binding("Name");
-            col2.IsReadOnly = false;
-            ((MainWindow)Application.Current.MainWindow).GroupsInfoGrid.Columns.Add(col2);
-
-            var col3 = new DataGridTextColumn();
-            col3.Header = "Creation Date";
-            col3.Binding = new Binding("CreationDate");
-            col3.Binding.StringFormat = "dd/MM/yyyy";
-            col3.IsReadOnly = false;
-            ((MainWindow)Application.Current.MainWindow).GroupsInfoGrid.Columns.Add(col3);
-
-            var col4 = new DataGridTextColumn();
-            col4.Header = "Students Count";
-            col4.Binding = new Binding("StudentCount");
-            col4.IsReadOnly = false;
-            ((MainWindow)Application.Current.MainWindow).GroupsInfoGrid.Columns.Add(col4);
-        }
-
-        public static void CreateStudentsGroupsColumns()
-        {
-            ClearItems(((MainWindow)Application.Current.MainWindow).StudentsGroupsInfoGrid);
-            ClearColumns(((MainWindow)Application.Current.MainWindow).StudentsGroupsInfoGrid);
-
-            var col2 = new DataGridTextColumn();
-            col2.Header = "Name";
-            col2.Binding = new Binding("Name");
-            col2.IsReadOnly = false;
-            ((MainWindow)Application.Current.MainWindow).StudentsGroupsInfoGrid.Columns.Add(col2);
-
-            var col3 = new DataGridTextColumn();
-            col3.Header = "Creation Date";
-            col3.Binding = new Binding("CreationDate");
-            col3.Binding.StringFormat = "dd/MM/yyyy";
-            col3.IsReadOnly = false;
-            ((MainWindow)Application.Current.MainWindow).StudentsGroupsInfoGrid.Columns.Add(col3);
-
-            var col4 = new DataGridTextColumn();
-            col4.Header = "Students Count";
-            col4.Binding = new Binding("StudentCount");
-            col4.IsReadOnly = false;
-            ((MainWindow)Application.Current.MainWindow).StudentsGroupsInfoGrid.Columns.Add(col4);
-
-        }
-
-        public static async void FillAllGrids()
+        public static async void Refresh(string choice)
         {
             var studentgrid = ((MainWindow)Application.Current.MainWindow).StudentsInfoGrid;
             var studentvisitsgrid = ((MainWindow)Application.Current.MainWindow).StudentsVisitationsInfoGrid;
@@ -698,47 +525,58 @@ namespace StudentsVisitationsWPF
             var groupgrid = ((MainWindow)Application.Current.MainWindow).GroupsInfoGrid;
             var visitationsgrid = ((MainWindow)Application.Current.MainWindow).VisitationsInfoGrid;
 
-            foreach (var student in db.Students.Include(stu => stu.Visitations))
+            choice = choice.ToLower();
+            switch (choice)
             {
-                studentgrid.Items.Add(student);
+                case "allstudents":
+                    var st = await db.Students.Include(stu => stu.Visitations).ToListAsync();
+                    studentgrid.ItemsSource = st;
+
+                    var gs = await db.Groups.Include(g => g.Students).ToListAsync();
+                    studentgroupsgrid.ItemsSource = gs;
+
+                    var vs = await db.Visitations.Include(v => v.Student).Include(v => v.Subject).ToListAsync();
+                    studentvisitsgrid.ItemsSource = vs;
+                    break;
+
+                case "groups":
+                    var grps = await db.Groups.Include(g => g.Students).ToListAsync();
+                    groupgrid.ItemsSource = grps;
+                    break;
+
+                case "students":
+                    var stus = await db.Students.Include(stu => stu.Visitations).ToListAsync();
+                    studentgrid.ItemsSource = stus;
+                    break;
+
+                case "visitations":
+                    var vsts= await db.Visitations.Include(v => v.Student).Include(v => v.Subject).ToListAsync();
+                    visitationsgrid.ItemsSource = vsts;
+                    break;
+
+                case "subjects":
+                    var subjs= await db.Subjects.ToListAsync();
+                    subjectgrid.ItemsSource = subjs;
+                    break;
+
+                case "all":
+                default:
+                    var students = await db.Students.Include(stu => stu.Visitations).ToListAsync();
+                    studentgrid.ItemsSource = students;
+
+                    var subjects = await db.Subjects.ToListAsync();
+                    subjectgrid.ItemsSource = subjects;
+
+                    var groups = await db.Groups.Include(g => g.Students).ToListAsync();
+                    groupgrid.ItemsSource = groups;
+                    studentgroupsgrid.ItemsSource = groups;
+
+                    var visitations = await db.Visitations.Include(v => v.Student).Include(v => v.Subject).ToListAsync();
+                    visitationsgrid.ItemsSource = visitations;
+                    studentvisitsgrid.ItemsSource = visitations;
+
+                    break;
             }
-
-            foreach (var subject in db.Subjects)
-            {
-                subjectgrid.Items.Add(subject);
-            }
-
-            foreach (var group in db.Groups.Include(g=>g.Students))
-            {
-                groupgrid.Items.Add(group);
-                studentgroupsgrid.Items.Add(group);
-            }
-
-            foreach (var visitation in db.Visitations.Include(v=>v.Student).Include(v=>v.Subject))
-            {
-                visitationsgrid.Items.Add(visitation);
-                studentvisitsgrid.Items.Add(visitation);
-            }
-        }
-
-        public static void RefreshTables()
-        {
-            var studentgrid = ((MainWindow)Application.Current.MainWindow).StudentsInfoGrid;
-            var studentvisitsgrid = ((MainWindow)Application.Current.MainWindow).StudentsVisitationsInfoGrid;
-            var studentgroupsgrid = ((MainWindow)Application.Current.MainWindow).StudentsGroupsInfoGrid;
-            var subjectgrid = ((MainWindow)Application.Current.MainWindow).SubjectsInfoGrid;
-            var groupgrid = ((MainWindow)Application.Current.MainWindow).GroupsInfoGrid;
-            var visitationsgrid = ((MainWindow)Application.Current.MainWindow).VisitationsInfoGrid;
-
-            ClearItems(studentgrid);
-            ClearItems(studentgroupsgrid);
-            ClearItems(studentvisitsgrid);
-            ClearItems(subjectgrid);
-            ClearItems(groupgrid);
-            ClearItems(visitationsgrid);
-            
-
-            FillAllGrids();
         }
     }
 }

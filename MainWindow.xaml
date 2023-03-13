@@ -13,7 +13,7 @@
 
             <TabItem Header="Students">
                 <Grid Background="#FFE5E5E5">
-                    <DataGrid Name="StudentsVisitationsInfoGrid" Margin="10,28,10,242" SelectionMode="Single" />
+                    <DataGrid Name="StudentsVisitationsInfoGrid" Margin="10,28,10,242" SelectionMode="Single" AutoGenerateColumns="False"/>
                     <Button x:Name="SearchMY" Content="Search Student By Date" HorizontalAlignment="Left" Margin="533,302,0,0" VerticalAlignment="Top" Height="45" Width="111" FontSize="10" Click="SearchMY_Click">
                         <Button.Resources>
                             <Style TargetType="Border">
@@ -42,8 +42,8 @@
                             </Style>
                         </Button.Resources>
                     </Button>
-                    <DataGrid x:Name="StudentsInfoGrid" Margin="10,173,414,106" SelectionMode="Single" SelectionChanged="StudentsInfoGrid_SelectionChanged" />
-                    <DataGrid x:Name="StudentsGroupsInfoGrid" Margin="400,173,15,106" SelectionMode="Single" SelectionChanged="StudentsGroupsInfoGrid_SelectionChanged" />
+                    <DataGrid AutoGenerateColumns="False" x:Name="StudentsInfoGrid" Margin="10,173,414,106" SelectionMode="Single" SelectionChanged="StudentsInfoGrid_SelectionChanged" />
+                    <DataGrid AutoGenerateColumns="False" x:Name="StudentsGroupsInfoGrid" Margin="400,173,15,106" SelectionMode="Single" SelectionChanged="StudentsGroupsInfoGrid_SelectionChanged" />
                     <Label Content="Visitations" HorizontalAlignment="Center" Margin="0,2,0,0" VerticalAlignment="Top" Width="70"/>
                     <Label Content="Students" HorizontalAlignment="Left" Margin="163,150,0,0" VerticalAlignment="Top" Width="70"/>
                     <Label Content="Groups" HorizontalAlignment="Left" Margin="558,150,0,0" VerticalAlignment="Top" Width="70"/>
@@ -61,7 +61,7 @@
 
             <TabItem Header="Groups">
                 <Grid Background="#FFE5E5E5">
-                    <DataGrid Name="GroupsInfoGrid" Margin="10,10,10,92" SelectionMode="Single" />
+                    <DataGrid AutoGenerateColumns="False" Name="GroupsInfoGrid" Margin="10,10,10,92" SelectionMode="Single" />
                     <Button x:Name="AddGroup" Content="Add Group" HorizontalAlignment="Left" Margin="185,310,0,0" VerticalAlignment="Top" Height="45" Width="95" RenderTransformOrigin="0.532,0.976" Click="AddGroup_Click">
                         <Button.Resources>
                             <Style TargetType="Border">
@@ -97,7 +97,7 @@
 
             <TabItem Header="Subjects">
                 <Grid Background="#FFE5E5E5">
-                    <DataGrid Name="SubjectsInfoGrid" Margin="10,10,10,92" SelectionMode="Single" />
+                    <DataGrid AutoGenerateColumns="False" Name="SubjectsInfoGrid" Margin="10,10,10,92" SelectionMode="Single" />
                     <Button x:Name="AddSubjectsButton" Content="Add Subject" HorizontalAlignment="Left" Margin="220,307,0,0" VerticalAlignment="Top" Height="48" Width="100" RenderTransformOrigin="0.532,0.976" Click="AddSubjectsButton_Click">
                         <Button.Resources>
                             <Style TargetType="Border">
@@ -126,7 +126,7 @@
 
             <TabItem Header="Visitations">
                 <Grid Background="#FFE5E5E5">
-                    <DataGrid Name="VisitationsInfoGrid" Margin="10,10,10,92" SelectionMode="Single" />
+                    <DataGrid AutoGenerateColumns="False" Name="VisitationsInfoGrid" Margin="10,10,10,92" SelectionMode="Single" />
                     <Button x:Name="AddVisitationButton" Content="Add Visitation" HorizontalAlignment="Left" Margin="195,309,0,0" VerticalAlignment="Top" Height="45" Width="95" Click="AddVisitationButton_Click">
                         <Button.Resources>
                             <Style TargetType="Border">

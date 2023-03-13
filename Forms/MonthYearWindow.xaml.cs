@@ -39,10 +39,8 @@ namespace StudentsVisitationsWPF.Forms
 
             try
             {
-                
                 DateOnly donly = new DateOnly(int.Parse(YearTextBox.Text),int.Parse(MonthTextBox.Text), 1);
                 var students = await DBMethods.GetStudentMonthYear(donly.Month, donly.Year);
-                
 
                 if(students.Count() == 0) 
                 { 
@@ -50,15 +48,7 @@ namespace StudentsVisitationsWPF.Forms
                     return; 
                 }
 
-                ((MainWindow)Application.Current.MainWindow).StudentsInfoGrid.Columns.Clear();
-                ((MainWindow)Application.Current.MainWindow).StudentsInfoGrid.Items.Clear();
-                DBMethods.CreateStudentColumns();
-
-                foreach (var stu in students)
-                {
-                    ((MainWindow)Application.Current.MainWindow).StudentsInfoGrid.Items.Add(stu);
-                }
-
+                ((MainWindow)Application.Current.MainWindow).StudentsInfoGrid.ItemsSource = students;
                 MessageBox.Show("Search Done!");
                 this.Close();
 

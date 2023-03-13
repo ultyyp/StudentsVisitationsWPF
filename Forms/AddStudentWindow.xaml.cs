@@ -81,9 +81,7 @@ namespace StudentsVisitationsWPF
 
 
             DBMethods.AddStudent(st);
-            ((MainWindow)Application.Current.MainWindow).StudentsInfoGrid.Items.Add(st);
-            DBMethods.RefreshTables();
-
+            DBMethods.Refresh("all");
 
             MessageBox.Show("Student Added!");
             this.Close();
