@@ -29,14 +29,14 @@ namespace StudentsVisitationsWPF
 
         private async void SearchButton_Click(object sender, RoutedEventArgs e)
         {
-            if (DBMethods.GetVisitationsCount().Result == 0)
+            if (MainWindow.dbMethods.GetVisitationsCount().Result == 0)
             {
                 MessageBox.Show("Visitations Table Is Empty!");
                 return;
             }
-            else if (DBMethods.GetVisitationsCount().Result >= 1)
+            else if (MainWindow.dbMethods.GetVisitationsCount().Result >= 1)
             {
-                var visitations = await DBMethods.GetVisitations();
+                var visitations = await MainWindow.dbMethods.GetVisitations();
                 if(DATEPICKER.SelectedDate.HasValue)
                 {
                     DateTime dt = DATEPICKER.SelectedDate.Value;

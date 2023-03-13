@@ -40,8 +40,8 @@ namespace StudentsVisitationsWPF.Forms
             }
 
             subject.Name= name;
-            DBMethods.AddSubject(subject);
-            DBMethods.Refresh("all");
+            MainWindow.dbMethods.AddSubject(subject);
+            MainWindow.dbMethods.Refresh("all");
             MessageBox.Show("Subject Added!");
             this.Close();
             

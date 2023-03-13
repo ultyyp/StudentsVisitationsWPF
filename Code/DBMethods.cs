@@ -17,12 +17,12 @@ using System.IO;
 
 namespace StudentsVisitationsWPF
 {
-    class DBMethods
+    public class DBMethods
     {
-        internal static string path = ""; //Path to db
-        internal static string ConnectionString = "Data Source=" + path;
-        internal static AppDbContext db = new AppDbContext();
-        internal static SqliteConnection connection = new SqliteConnection(ConnectionString);
+        public static string path = ""; //Path to db
+        public static string ConnectionString = "Data Source=" + path;
+        public AppDbContext db = new AppDbContext();
+        public SqliteConnection connection = new SqliteConnection(ConnectionString);
 
 
         public class AppDbContext : DbContext
@@ -51,7 +51,7 @@ namespace StudentsVisitationsWPF
         }
 
 
-        public static async Task<Visitation[]> GetVisitations()
+        public async Task<Visitation[]> GetVisitations()
         {
             try
             {
@@ -67,7 +67,7 @@ namespace StudentsVisitationsWPF
 
         }
 
-        public static async Task<Student[]> GetStudentMonthYear(int month, int year)
+        public async Task<Student[]> GetStudentMonthYear(int month, int year)
         {
             try
             {
@@ -85,7 +85,7 @@ namespace StudentsVisitationsWPF
 
         }
 
-        public static async Task<Student[]> GetStudents()
+        public async Task<Student[]> GetStudents()
         {
             try
             {
@@ -99,7 +99,7 @@ namespace StudentsVisitationsWPF
 
         }
 
-        public static async Task<Subject[]> GetSubjects()
+        public async Task<Subject[]> GetSubjects()
         {
             try
             {
@@ -114,7 +114,7 @@ namespace StudentsVisitationsWPF
 
         }
 
-        public static async Task<Group[]> GetGroups()
+        public async Task<Group[]> GetGroups()
         {
             try
             {
@@ -128,7 +128,7 @@ namespace StudentsVisitationsWPF
 
         }
 
-        public static async Task<Group[]> GetNonEmptyGroups()
+        public async Task<Group[]> GetNonEmptyGroups()
         {
 
             try
@@ -145,7 +145,7 @@ namespace StudentsVisitationsWPF
             return Array.Empty<Group>();
         }
 
-        public static async Task<int> GetVisitationsCount()
+        public async Task<int> GetVisitationsCount()
         {
             try
             {
@@ -160,7 +160,7 @@ namespace StudentsVisitationsWPF
         }
 
 
-        public static async Task<int> GetStudentsCount()
+        public async Task<int> GetStudentsCount()
         {
             try
             {
@@ -174,7 +174,7 @@ namespace StudentsVisitationsWPF
 
         }
 
-        public static async Task<int> GetSubjectsCount()
+        public async Task<int> GetSubjectsCount()
         {
             try
             {
@@ -188,7 +188,7 @@ namespace StudentsVisitationsWPF
 
         }
 
-        public static async Task<int> GetGroupsCount()
+        public async Task<int> GetGroupsCount()
         {
             try
             {
@@ -203,7 +203,7 @@ namespace StudentsVisitationsWPF
         }
 
        
-        public static async void EditStudent(Guid guid, Student st)
+        public async void EditStudent(Guid guid, Student st)
         {
             var student = db.Students.Include(s => s.Group).Include(s => s.Visitations).Where(s => s.Id == guid).ToArray()[0];
             student.FIO = st.FIO;
@@ -213,7 +213,7 @@ namespace StudentsVisitationsWPF
             await db.SaveChangesAsync();
         }
 
-        public static async void AddStudent(Student student)
+        public async void AddStudent(Student student)
         {
             try
             {
@@ -228,7 +228,7 @@ namespace StudentsVisitationsWPF
             }
         }
 
-        public static async void AddVisit(Visitation visit)
+        public async void AddVisit(Visitation visit)
         {
             db.Visitations.Include(v => v.Student);
             db.Visitations.Include(v => v.Subject);
@@ -237,14 +237,14 @@ namespace StudentsVisitationsWPF
             Refresh("all");
         }
 
-        public static async void AddSubject(Subject subject)
+        public async void AddSubject(Subject subject)
         {
             await db.Subjects.AddAsync(subject);
             await db.SaveChangesAsync();
             Refresh("all");
         }
 
-        public static async void AddGroup(Group group)
+        public async void AddGroup(Group group)
         {
             db.Groups.Include(g => g.Students);
             await db.Groups.AddAsync(group);
@@ -252,7 +252,7 @@ namespace StudentsVisitationsWPF
             Refresh("all");
         }
 
-        public static bool StudentTableExists()
+        public bool StudentTableExists()
         {
             connection.Open();
             using var command = connection.CreateCommand();
@@ -268,7 +268,7 @@ namespace StudentsVisitationsWPF
             }
         }
 
-        public static bool VisitationTableExists()
+        public bool VisitationTableExists()
         {
             connection.Open();
             using var command = connection.CreateCommand();
@@ -284,7 +284,7 @@ namespace StudentsVisitationsWPF
             }
         }
 
-        public static async void GenerateStudents(int ammount)
+        public async void GenerateStudents(int ammount)
         {
             if(await GetGroupsCount()==0)
             {
@@ -326,7 +326,7 @@ namespace StudentsVisitationsWPF
 
         }
 
-        public static async void GenerateVisitations(int ammount)
+        public async void GenerateVisitations(int ammount)
         {
             if (await GetStudentsCount() > 0 && await GetSubjectsCount() > 0)
             {
@@ -371,7 +371,7 @@ namespace StudentsVisitationsWPF
             }
         }
 
-        public static void GenerateSubjects(int ammount)
+        public void GenerateSubjects(int ammount)
         {
             if (ammount == 0) { return; }
 
@@ -399,7 +399,7 @@ namespace StudentsVisitationsWPF
 
         }
 
-        public static void GenerateGroups(int ammount)
+        public void GenerateGroups(int ammount)
         {
             if (ammount == 0) { return; }
 
@@ -423,7 +423,7 @@ namespace StudentsVisitationsWPF
             MessageBox.Show("Groups Generated!");
         }
 
-        public static bool StudentExists(int id)
+        public bool StudentExists(int id)
         {
             connection.Open();
             using var command = connection.CreateCommand();
@@ -439,7 +439,7 @@ namespace StudentsVisitationsWPF
             }
         }
 
-        public static async void ClearStudents()
+        public async void ClearStudents()
         {
 
             try
@@ -459,7 +459,7 @@ namespace StudentsVisitationsWPF
             
         }
 
-        public static async void ClearVisitations()
+        public async void ClearVisitations()
         {
             try
             {
@@ -477,7 +477,7 @@ namespace StudentsVisitationsWPF
             }
         }
 
-        public static async void ClearSubjects()
+        public async void ClearSubjects()
         {
             try
             {
@@ -496,7 +496,7 @@ namespace StudentsVisitationsWPF
             
         }
 
-        public static async void ClearGroups()
+        public async void ClearGroups()
         {
             try
             {
@@ -516,7 +516,7 @@ namespace StudentsVisitationsWPF
         }
 
 
-        public static async void Refresh(string choice)
+        public async void Refresh(string choice)
         {
             var studentgrid = ((MainWindow)Application.Current.MainWindow).StudentsInfoGrid;
             var studentvisitsgrid = ((MainWindow)Application.Current.MainWindow).StudentsVisitationsInfoGrid;

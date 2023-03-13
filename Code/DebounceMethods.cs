@@ -9,18 +9,20 @@ namespace StudentsVisitationsWPF.Code
 {
     public class DebounceMethods
     {
-        public static async Task<bool> DebounceTextBox(int ms, TextBox textBox, string text)
+        public int QueryVersion = 0;
+        public async Task Debounce(int ms, Func<Task> func)
         {
             TimeSpan ts = TimeSpan.FromMilliseconds(ms);
+            QueryVersion++;
+            var currentVersion = QueryVersion;
+
             await Task.Delay(ts);
-            if(textBox.Text==text)
+
+            if(currentVersion == QueryVersion)
             {
-                return true;
+                await func();
             }
-            else
-            {
-                return false;
-            }
+            
         }
     }
 }

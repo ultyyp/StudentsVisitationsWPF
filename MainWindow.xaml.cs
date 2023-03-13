@@ -23,7 +23,6 @@ using StudentsVisitationsWPF.Forms;
 using StudentsVisitationsWPF.Entities;
 using System.Windows.Markup;
 using System.Windows.Controls.Primitives;
-using static System.Net.Mime.MediaTypeNames;
 using StudentsVisitationsWPF.Code;
 
 namespace StudentsVisitationsWPF
@@ -35,6 +34,9 @@ namespace StudentsVisitationsWPF
     /// </summary>
     public partial class MainWindow : Window
     {
+        public static DBMethods dbMethods = new DBMethods();
+        public static DebounceMethods dispatcher = new DebounceMethods();
+
         public MainWindow()
         {
             InitializeComponent();
@@ -43,8 +45,6 @@ namespace StudentsVisitationsWPF
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            var connection = (SqliteConnection) DBMethods.db.Database.GetDbConnection();
-            connection.CreateCollation("NOCASE", (x, y) => string.Compare(x, y, ignoreCase: true));
 
             StudentsInfoGrid.BeginningEdit += (s, ss) => ss.Cancel = true; //Fix for crashes
             StudentsVisitationsInfoGrid.BeginningEdit += (s, ss) => ss.Cancel = true;
@@ -54,7 +54,7 @@ namespace StudentsVisitationsWPF
             GroupsInfoGrid.BeginningEdit += (s, ss) => ss.Cancel = true;
 
             DataGridMethods.InitialiseGrids();
-            DBMethods.Refresh("all");
+            dbMethods.Refresh("all");
         }
 
         private void SearchVisitationButton_Click(object sender, RoutedEventArgs e)
@@ -130,22 +130,22 @@ namespace StudentsVisitationsWPF
 
         private void ClearStudents_Click(object sender, RoutedEventArgs e)
         {
-            DBMethods.ClearStudents();
+            dbMethods.ClearStudents();
         }
 
         private void ClearVisitations_Click(object sender, RoutedEventArgs e)
         {
-            DBMethods.ClearVisitations();
+            dbMethods.ClearVisitations();
         }
 
         private void ClearSubjectsButton_Click(object sender, RoutedEventArgs e)
         {
-            DBMethods.ClearSubjects();
+            dbMethods.ClearSubjects();
         }
 
         private void ClearGroups_Click(object sender, RoutedEventArgs e)
         {
-            DBMethods.ClearGroups();
+            dbMethods.ClearGroups();
         }
 
         private void SearchMY_Click(object sender, RoutedEventArgs e)
@@ -157,14 +157,14 @@ namespace StudentsVisitationsWPF
         
         internal async void FullGroupsMethod()
         {
-            if (await DBMethods.GetGroupsCount() == 0)
+            if (await dbMethods.GetGroupsCount() == 0)
             {
                 MessageBox.Show("Groups Table Is Empty!");
                 return;
             }
-            else if (await DBMethods.GetGroupsCount() >= 1)
+            else if (await dbMethods.GetGroupsCount() >= 1)
             {
-                var groups = await DBMethods.GetNonEmptyGroups();
+                var groups = await dbMethods.GetNonEmptyGroups();
                 GroupsInfoGrid.ItemsSource = groups;
             }
             else
@@ -195,59 +195,33 @@ namespace StudentsVisitationsWPF
 
         private async void StudentsTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            bool isValidText = await DebounceMethods.DebounceTextBox(250, StudentsTextBox, StudentsTextBox.Text);
-            if (isValidText ==  false) 
-            {
-                return;
-            }
-
-            SearchStudents();
+            await dispatcher.Debounce(250, () => SearchStudents());
         }
 
         private async void GroupTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            bool isValidText = await DebounceMethods.DebounceTextBox(250, GroupTextBox, GroupTextBox.Text);
-            if (isValidText == false)
-            {
-                return;
-            }
-
-            SearchGroups();
+            await dispatcher.Debounce(250, () => SearchGroups());
         }
 
         private async void SubjectsTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            bool isValidText = await DebounceMethods.DebounceTextBox(250, SubjectsTextBox, SubjectsTextBox.Text);
-            if (isValidText == false)
-            {
-                return;
-            }
-
-            SearchSubjects();
+            await dispatcher.Debounce(250, () => SearchSubjects());
         }
 
         private async void VisitationsTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            bool isValidText = await DebounceMethods.DebounceTextBox(250, VisitationsTextBox, VisitationsTextBox.Text);
-            if (isValidText == false)
-            {
-                return;
-            }
-
-            SearchVisitations();
-
-
+            await dispatcher.Debounce(250, () => SearchVisitations());
         }
 
-        public async void SearchStudents()
+        public async Task SearchStudents()
         {
             if (StudentsTextBox.Text.Trim().Length == 0)
             {
-                StudentsInfoGrid.ItemsSource = await DBMethods.db.Students.Include(stu => stu.Visitations).ToListAsync();
+                StudentsInfoGrid.ItemsSource = await dbMethods.db.Students.Include(stu => stu.Visitations).ToListAsync();
 
-                StudentsGroupsInfoGrid.ItemsSource = await DBMethods.db.Groups.Include(g => g.Students).ToListAsync();
+                StudentsGroupsInfoGrid.ItemsSource = await dbMethods.db.Groups.Include(g => g.Students).ToListAsync();
 
-                StudentsVisitationsInfoGrid.ItemsSource = await DBMethods.db.Visitations.Include(v => v.Student).Include(v => v.Subject).ToListAsync();
+                StudentsVisitationsInfoGrid.ItemsSource = await dbMethods.db.Visitations.Include(v => v.Student).Include(v => v.Subject).ToListAsync();
 
                 return;
             }
@@ -255,7 +229,7 @@ namespace StudentsVisitationsWPF
             var text = StudentsTextBox.Text;
 
 
-            var studentMatches = await DBMethods.db.Students
+            var studentMatches = await dbMethods.db.Students
                     .Include(s => s.Visitations)
                     .Include(s => s.Group)
                     .Where(s => EF.Functions.Like(s.FIO, $"%{text}%"))
@@ -263,7 +237,7 @@ namespace StudentsVisitationsWPF
 
             StudentsInfoGrid.ItemsSource = studentMatches;
 
-            var visitationsMatches = await DBMethods.db.Visitations
+            var visitationsMatches = await dbMethods.db.Visitations
                 .Include(s => s.Student)
                 .Include(s => s.Subject)
                 .Where(s => EF.Functions.Like(s.Student!.FIO, $"%{text}%")
@@ -271,26 +245,28 @@ namespace StudentsVisitationsWPF
 
             StudentsVisitationsInfoGrid.ItemsSource = visitationsMatches;
 
-            var groupsMatches = await DBMethods.db.Groups
+            var groupsMatches = await dbMethods.db.Groups
                 .Include(s => s.Students)
                 .Where(s => EF.Functions.Like(s.Name, $"%{text}%")
                 || s.Students.Any(s => EF.Functions.Like(s.FIO, $"%{text}%"))
                 ).ToListAsync();
 
             StudentsGroupsInfoGrid.ItemsSource = groupsMatches;
+
+            
         }
 
-        public async void SearchVisitations()
+        public async Task SearchVisitations()
         {
             if (VisitationsTextBox.Text.Trim().Length == 0)
             {
-                VisitationsInfoGrid.ItemsSource = await DBMethods.db.Visitations.Include(v => v.Student).Include(v => v.Subject).ToListAsync();
+                VisitationsInfoGrid.ItemsSource = await dbMethods.db.Visitations.Include(v => v.Student).Include(v => v.Subject).ToListAsync();
                 return;
             }
 
             var text = VisitationsTextBox.Text;
 
-            var visitationsMatches = await DBMethods.db.Visitations
+            var visitationsMatches = await dbMethods.db.Visitations
                 .Include(s => s.Student)
                 .Include(s => s.Subject)
                 .Where(s => EF.Functions.Like(s.Student.FIO, $"%{text}%")
@@ -302,17 +278,17 @@ namespace StudentsVisitationsWPF
             }
         }
 
-        public async void SearchSubjects()
+        public async Task SearchSubjects()
         {
             if (SubjectsTextBox.Text.Trim().Length == 0)
             {
-                SubjectsInfoGrid.ItemsSource = await DBMethods.db.Subjects.ToListAsync();
+                SubjectsInfoGrid.ItemsSource = await dbMethods.db.Subjects.ToListAsync();
                 return;
             }
 
             var text = SubjectsTextBox.Text;
 
-            var subjectsMatches = await DBMethods.db.Subjects
+            var subjectsMatches = await dbMethods.db.Subjects
                 .Where(s => EF.Functions.Like(s.Name, $"%{text}%")).ToListAsync();
 
             if (subjectsMatches.Count > 0)
@@ -321,17 +297,17 @@ namespace StudentsVisitationsWPF
             }
         }
 
-        public async void SearchGroups()
+        public async Task SearchGroups()
         {
             if (GroupTextBox.Text.Trim().Length == 0)
             {
-                GroupsInfoGrid.ItemsSource = await DBMethods.db.Groups.Include(g => g.Students).ToListAsync();
+                GroupsInfoGrid.ItemsSource = await dbMethods.db.Groups.Include(g => g.Students).ToListAsync();
                 return;
             }
 
             var text = GroupTextBox.Text;
 
-            var groupsMatches = await DBMethods.db.Groups
+            var groupsMatches = await dbMethods.db.Groups
                 .Include(s => s.Students)
                 .Where(s => EF.Functions.Like(s.Name, $"%{text}%")
                 || s.Students.Any(s => EF.Functions.Like(s.FIO, $"%{text}%")))

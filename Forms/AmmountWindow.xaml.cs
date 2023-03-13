@@ -60,19 +60,19 @@ namespace StudentsVisitationsWPF
                 switch (type)
                 {
                     case "student":
-                        DBMethods.GenerateStudents(ammount);
+                        MainWindow.dbMethods.GenerateStudents(ammount);
                         this.Close();
                         break;
                     case "visitation":
-                        DBMethods.GenerateVisitations(ammount);
+                        MainWindow.dbMethods.GenerateVisitations(ammount);
                         this.Close();
                         break;
                     case "subject":
-                        DBMethods.GenerateSubjects(ammount);
+                        MainWindow.dbMethods.GenerateSubjects(ammount);
                         this.Close();
                         break;
                     case "group":
-                        DBMethods.GenerateGroups(ammount);
+                        MainWindow.dbMethods.GenerateGroups(ammount);
                         this.Close();
                         break;
                 }

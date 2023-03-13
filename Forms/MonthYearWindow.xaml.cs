@@ -40,7 +40,7 @@ namespace StudentsVisitationsWPF.Forms
             try
             {
                 DateOnly donly = new DateOnly(int.Parse(YearTextBox.Text),int.Parse(MonthTextBox.Text), 1);
-                var students = await DBMethods.GetStudentMonthYear(donly.Month, donly.Year);
+                var students = await MainWindow.dbMethods.GetStudentMonthYear(donly.Month, donly.Year);
 
                 if(students.Count() == 0) 
                 { 

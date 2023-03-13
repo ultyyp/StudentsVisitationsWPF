@@ -47,12 +47,12 @@ namespace StudentsVisitationsWPF
                 return;
             }
             var selectedStudentName = ComboBox.SelectedItem.ToString();
-            var students = await DBMethods.GetStudents();
+            var students = await MainWindow.dbMethods.GetStudents();
             var selectedStudent = students.Where(x => x.FIO == selectedStudentName).ToList();
             vs.Student = selectedStudent[0];
 
             var selectedSubjectName = SubjectComboBox.SelectedItem.ToString();
-            var subjects = await DBMethods.GetSubjects();
+            var subjects = await MainWindow.dbMethods.GetSubjects();
             var selectedSubject = subjects.Where(x => x.Name == selectedSubjectName).ToList();
             vs.Subject = selectedSubject[0];
 
@@ -64,21 +64,21 @@ namespace StudentsVisitationsWPF
             DateTime dt = DATEDatePicker.SelectedDate.Value;
             vs.Date = new DateOnly(dt.Year, dt.Month, dt.Day);
 
-            DBMethods.AddVisit(vs);
-            DBMethods.Refresh("all");
+            MainWindow.dbMethods.AddVisit(vs);
+            MainWindow.dbMethods.Refresh("all");
             MessageBox.Show("Visit Added!");
             this.Close();
         }
 
         public async void FillComboBoxes()
         {
-            var stu = await DBMethods.GetStudents();
+            var stu = await MainWindow.dbMethods.GetStudents();
             foreach (var student in stu)
             {
                 ComboBox.Items.Add(student.FIO);
             }
 
-            var sub = await DBMethods.GetSubjects();
+            var sub = await MainWindow.dbMethods.GetSubjects();
             foreach (var subject in sub)
             {
                 SubjectComboBox.Items.Add(subject.Name);

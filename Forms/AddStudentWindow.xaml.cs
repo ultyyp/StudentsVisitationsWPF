@@ -42,7 +42,7 @@ namespace StudentsVisitationsWPF
                 return;
             }
 
-            var students = await DBMethods.GetStudents();
+            var students = await MainWindow.dbMethods.GetStudents();
             foreach( var student in students )
             {
                 if(student.FIO.Trim() == st.FIO.Trim() )
@@ -75,13 +75,13 @@ namespace StudentsVisitationsWPF
             }
 
             var selectedGroupName = GroupComboBox.SelectedItem.ToString();
-            var groups = await DBMethods.GetGroups();
+            var groups = await MainWindow.dbMethods.GetGroups();
             var selectedGroups = groups.Where(x => x.Name == selectedGroupName).ToList();
             st.Group = selectedGroups[0];
 
 
-            DBMethods.AddStudent(st);
-            DBMethods.Refresh("all");
+            MainWindow.dbMethods.AddStudent(st);
+            MainWindow.dbMethods.Refresh("all");
 
             MessageBox.Show("Student Added!");
             this.Close();
@@ -89,7 +89,7 @@ namespace StudentsVisitationsWPF
 
         public async void FillComboBox()
         {
-            var groups = await DBMethods.GetGroups();
+            var groups = await MainWindow.dbMethods.GetGroups();
             foreach (var group in groups)
             {
                 GroupComboBox.Items.Add(group.Name);

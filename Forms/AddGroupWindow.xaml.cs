@@ -43,8 +43,8 @@ namespace StudentsVisitationsWPF.Forms
                 Name = NameTextBox.Text,
                 CreationDate = DateTime.Now
             };
-            DBMethods.AddGroup(group);
-            DBMethods.Refresh("all");
+            MainWindow.dbMethods.AddGroup(group);
+            MainWindow.dbMethods.Refresh("all");
             MessageBox.Show("Group Added!");
             this.Close();
         }
