@@ -99,16 +99,22 @@ namespace StudentsVisitationsWPF.Code
             ((MainWindow)Application.Current.MainWindow).StudentsInfoGrid.Columns.Add(col3);
 
             var col4 = new DataGridTextColumn();
-            col4.Header = "Email";
-            col4.Binding = new Binding("Email");
+            col4.Header = "Passport Number";
+            col4.Binding = new Binding("PassportNumber");
             col4.IsReadOnly = false;
             ((MainWindow)Application.Current.MainWindow).StudentsInfoGrid.Columns.Add(col4);
 
             var col5 = new DataGridTextColumn();
-            col5.Header = "Group";
-            col5.Binding = new Binding("Group");
+            col5.Header = "Email";
+            col5.Binding = new Binding("Email");
             col5.IsReadOnly = false;
             ((MainWindow)Application.Current.MainWindow).StudentsInfoGrid.Columns.Add(col5);
+
+            var col6 = new DataGridTextColumn();
+            col6.Header = "Group";
+            col6.Binding = new Binding("Group");
+            col6.IsReadOnly = false;
+            ((MainWindow)Application.Current.MainWindow).StudentsInfoGrid.Columns.Add(col6);
 
 
         }

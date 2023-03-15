@@ -14,6 +14,7 @@ using System.Collections.ObjectModel;
 using StudentsVisitationsWPF.Entities;
 using Bogus.DataSets;
 using System.IO;
+using StudentsVisitationsWPF.ValueObjects;
 
 namespace StudentsVisitationsWPF
 {
@@ -43,6 +44,24 @@ namespace StudentsVisitationsWPF
                             "mydatabaselog.txt", line + Environment.NewLine);
                     }); ;
             }
+
+            protected override void OnModelCreating(ModelBuilder modelBuilder)
+            {
+                modelBuilder.Entity<Student>()
+                    .OwnsOne(s => s.Email,
+                    builder => builder.Property(it => it.Value)
+                    .HasColumnName("Email")
+                );
+
+                modelBuilder.Entity<Student>()
+                 .OwnsOne(s => s.PassportNumber,
+                 builder => builder.Property(it => it.Value)
+                 .HasColumnName("PassportNumber")
+             );
+
+
+            }
+
 
             public DbSet<Student> Students => Set<Student>();
             public DbSet<Visitation> Visitations => Set<Visitation>();
@@ -295,7 +314,7 @@ namespace StudentsVisitationsWPF
             //Name & email Generator 
             var studentFaker = new Faker<Student>("en")
                 .RuleFor(it => it.FIO, f => f.Name.FullName())
-                .RuleFor(it => it.Email, (f, it) => f.Internet.Email(it.FIO));
+                .RuleFor(it => it.Email, (f, it) => new Email(f.Internet.Email(it.FIO)));
 
             //Randomiser
             var randomiser = new Bogus.Randomizer();
@@ -312,6 +331,7 @@ namespace StudentsVisitationsWPF
                     Id = Guid.NewGuid(),
                     FIO = randominfo.FIO,
                     DOB = new DateOnly(randomiser.Int(1970, 2022), randomiser.Int(1, 12), randomiser.Int(1, 29)),
+                    PassportNumber = new PassportNumber(randomiser.Int(100000000, 999999999).ToString()),
                     Email = randominfo.Email
                 };
                 student.Group = groups[randomnum];
@@ -462,9 +482,18 @@ namespace StudentsVisitationsWPF
 
         public async void ClearSubjects()
         {
-            await db.Database.ExecuteSqlRawAsync("DELETE FROM Subjects");
-            Refresh("all");
-            MessageBox.Show("Cleared!");
+            try
+            {
+                await db.Database.ExecuteSqlRawAsync("DELETE FROM Subjects");
+                Refresh("all");
+                MessageBox.Show("Cleared!");
+            }
+            catch
+            {
+                MessageBox.Show("Clear visitations first!");
+                return;
+            }
+            
         }
 
         public async void ClearGroups()

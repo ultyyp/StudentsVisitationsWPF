@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using StudentsVisitationsWPF;
 
@@ -10,9 +11,10 @@ using StudentsVisitationsWPF;
 namespace StudentsVisitationsWPF.Migrations
 {
     [DbContext(typeof(DBMethods.AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230315141634_AddedPassportNumberToStudents")]
+    partial class AddedPassportNumberToStudents
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.14");

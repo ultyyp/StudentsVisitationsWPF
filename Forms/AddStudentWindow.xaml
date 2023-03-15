@@ -9,11 +9,11 @@
         Loaded="Window_Loaded">
     <Grid>
         <Label Content="FIO:" HorizontalAlignment="Left" Margin="49,20,0,0" VerticalAlignment="Top" Width="55"/>
-        <Label Content="DOB:" HorizontalAlignment="Left" Margin="49,51,0,0" VerticalAlignment="Top" Width="55" RenderTransformOrigin="0.56,-0.57"/>
-        <Label Content="Email:" HorizontalAlignment="Left" Margin="49,77,0,0" VerticalAlignment="Top" Width="55" RenderTransformOrigin="0.495,1.211"/>
+        <Label Content="DOB:" HorizontalAlignment="Left" Margin="49,47,0,0" VerticalAlignment="Top" Width="55" RenderTransformOrigin="0.56,-0.57"/>
+        <Label Content="Email:" HorizontalAlignment="Left" Margin="49,96,0,0" VerticalAlignment="Top" Width="55" RenderTransformOrigin="0.495,1.211"/>
         <TextBox Name ="FIOTextBox" HorizontalAlignment="Left" Margin="96,24,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="132"/>
-        <DatePicker Name="DOBDatePicker" HorizontalAlignment="Left" Margin="96,52,0,0" VerticalAlignment="Top"/>
-        <TextBox Name="EMAILTextBox" HorizontalAlignment="Left" Margin="96,82,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
+        <DatePicker Name="DOBDatePicker" HorizontalAlignment="Left" Margin="96,49,0,0" VerticalAlignment="Top"/>
+        <TextBox Name="EMAILTextBox" HorizontalAlignment="Left" Margin="96,99,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
         <Button Content="Add Student" Name="AddButton" HorizontalAlignment="Left" Margin="310,80,0,0" VerticalAlignment="Top" RenderTransformOrigin="1.61,-0.098" Height="36" Width="71" Click="AddButton_Click">
             <Button.Resources>
                 <Style TargetType="Border">
@@ -21,8 +21,10 @@
                 </Style>
             </Button.Resources>
         </Button>
-        <Label Content="Group:" HorizontalAlignment="Left" Margin="49,103,0,0" VerticalAlignment="Top"/>
-        <ComboBox Name="GroupComboBox" HorizontalAlignment="Left" Margin="96,107,0,0" VerticalAlignment="Top" Width="120"/>
+        <Label Content="Group:" HorizontalAlignment="Left" Margin="49,118,0,0" VerticalAlignment="Top"/>
+        <ComboBox Name="GroupComboBox" HorizontalAlignment="Left" Margin="95,122,0,0" VerticalAlignment="Top" Width="120"/>
+        <Label Content="Passport Num:" HorizontalAlignment="Left" Margin="10,70,0,0" VerticalAlignment="Top" Width="90" RenderTransformOrigin="0.495,1.211"/>
+        <TextBox x:Name="PassportNumberTextbox" HorizontalAlignment="Left" Margin="96,76,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
 
     </Grid>
 </Window>

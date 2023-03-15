@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using StudentsVisitationsWPF.ValueObjects;
 
 namespace StudentsVisitationsWPF.Entities
 {
@@ -13,7 +14,8 @@ namespace StudentsVisitationsWPF.Entities
         public Guid Id { get; set; }
         public string FIO { get; set; }
         public DateOnly DOB { get; set; }
-        public string Email { get; set; }
+        public PassportNumber? PassportNumber { get; set; }
+        public Email? Email { get; set; }
         public Group? Group { get; set; }
         public List<Visitation?> Visitations { get; set; }
 

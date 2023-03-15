@@ -12,6 +12,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using StudentsVisitationsWPF.ValueObjects;
 
 namespace StudentsVisitationsWPF.Forms
 {
@@ -31,11 +32,13 @@ namespace StudentsVisitationsWPF.Forms
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             FillComboBox();
+            FIOTextBox.Text = selectedStudent.FIO.Trim();
+            PassportNumbox.Text = selectedStudent.PassportNumber!.ToString().Trim();
+            EMAILTextBox.Text = selectedStudent.Email!.ToString().Trim();
         }
 
         private async void EditButton_Click(object sender, RoutedEventArgs e)
         {
-            
             Student st = new Student();
             st.Id = selectedStudent.Id;
 
@@ -49,7 +52,7 @@ namespace StudentsVisitationsWPF.Forms
             var students = await MainWindow.dbMethods.GetStudents();
             foreach (var student in students)
             {
-                if (student.FIO.Trim() == st.FIO.Trim())
+                if (student.FIO.Trim() == st.FIO.Trim() && student.Id != st.Id)
                 {
                     MessageBox.Show("Student with that name already exists!");
                     return;
@@ -65,8 +68,22 @@ namespace StudentsVisitationsWPF.Forms
             st.DOB = new DateOnly(dt.Year, dt.Month, dt.Day);
 
 
-            st.Email = EMAILTextBox.Text.Trim();
-            if (st.Email.Length <= 0)
+
+            try
+            {
+                st.PassportNumber = new PassportNumber(PassportNumbox.Text.Trim());
+            }
+            catch
+            {
+                MessageBox.Show("Please enter a valid passport number!");
+                return;
+            }
+
+            try
+            {
+                st.Email = new Email(EMAILTextBox.Text.Trim());
+            }
+            catch
             {
                 MessageBox.Show("Please enter a valid email!");
                 return;

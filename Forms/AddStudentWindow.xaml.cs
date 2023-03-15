@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using StudentsVisitationsWPF.Entities;
+using StudentsVisitationsWPF.ValueObjects;
 
 namespace StudentsVisitationsWPF
 {
@@ -60,13 +61,26 @@ namespace StudentsVisitationsWPF
             DateTime dt = DOBDatePicker.SelectedDate.Value;
             st.DOB = new DateOnly(dt.Year, dt.Month, dt.Day);
 
+            try
+            {
+                st.PassportNumber = new PassportNumber(PassportNumberTextbox.Text.Trim());
+            }
+            catch
+            {
+                MessageBox.Show("Please enter a valid passport number!");
+                return;
+            }
 
-            st.Email = EMAILTextBox.Text.Trim();
-            if (st.Email.Length <= 0)
+            try
+            {
+                st.Email = new Email(EMAILTextBox.Text.Trim());
+            }
+            catch
             {
                 MessageBox.Show("Please enter a valid email!");
                 return;
             }
+            
 
             if(GroupComboBox.SelectedIndex == -1)
             {
