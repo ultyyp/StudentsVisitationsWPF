@@ -330,7 +330,7 @@ namespace StudentsVisitationsWPF
                 {
                     Id = Guid.NewGuid(),
                     FIO = randominfo.FIO,
-                    DOB = new DateOnly(randomiser.Int(1970, 2022), randomiser.Int(1, 12), randomiser.Int(1, 29)),
+                    DOB = new DateOnly(randomiser.Int(1975, 2022), randomiser.Int(1, 12), randomiser.Int(1, 29)),
                     PassportNumber = new PassportNumber(randomiser.Int(100000000, 999999999).ToString()),
                     Email = randominfo.Email
                 };
@@ -463,6 +463,7 @@ namespace StudentsVisitationsWPF
             try
             {
                 await db.Database.ExecuteSqlRawAsync("DELETE FROM Students");
+                db.ChangeTracker.Clear();
                 Refresh("all");
                 MessageBox.Show("Cleared!");
             }
@@ -476,6 +477,7 @@ namespace StudentsVisitationsWPF
         public async void ClearVisitations()
         {
             await db.Database.ExecuteSqlRawAsync("DELETE FROM Visitations");
+            db.ChangeTracker.Clear();
             Refresh("all");
             MessageBox.Show("Cleared!");
         }
@@ -485,6 +487,7 @@ namespace StudentsVisitationsWPF
             try
             {
                 await db.Database.ExecuteSqlRawAsync("DELETE FROM Subjects");
+                db.ChangeTracker.Clear();
                 Refresh("all");
                 MessageBox.Show("Cleared!");
             }
@@ -501,6 +504,7 @@ namespace StudentsVisitationsWPF
             try
             {
                 await db.Database.ExecuteSqlRawAsync("DELETE FROM Groups");
+                db.ChangeTracker.Clear();
                 Refresh("all");
                 MessageBox.Show("Cleared!");
             }
