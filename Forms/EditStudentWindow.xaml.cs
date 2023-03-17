@@ -102,8 +102,10 @@ namespace StudentsVisitationsWPF.Forms
 
 
             MainWindow.dbMethods.EditStudent(selectedStudent.Id ,st);
-            MainWindow.dbMethods.Refresh("all");
-         
+            await MainWindow.dbMethods.LoadStudents(false);
+            await MainWindow.dbMethods.LoadGroups();
+            await MainWindow.dbMethods.LoadStudentGroups();
+
             MessageBox.Show("Student Edited!");
             this.Close();
         }

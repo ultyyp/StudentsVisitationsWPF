@@ -29,7 +29,7 @@ namespace StudentsVisitationsWPF.Forms
             InitializeComponent();
         }
 
-        private void AddButton_Click(object sender, RoutedEventArgs e)
+        private async void AddButton_Click(object sender, RoutedEventArgs e)
         {
             if(NameTextBox.Text.Trim().Length == 0)
             {
@@ -44,7 +44,8 @@ namespace StudentsVisitationsWPF.Forms
                 CreationDate = DateTime.Now
             };
             MainWindow.dbMethods.AddGroup(group);
-            MainWindow.dbMethods.Refresh("all");
+            await MainWindow.dbMethods.LoadGroups();
+            await MainWindow.dbMethods.LoadStudentGroups();
             MessageBox.Show("Group Added!");
             this.Close();
         }

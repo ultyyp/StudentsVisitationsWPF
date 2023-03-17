@@ -26,7 +26,7 @@ namespace StudentsVisitationsWPF.Forms
             InitializeComponent();
         }
 
-        private void AddButton_Click(object sender, RoutedEventArgs e)
+        private async void AddButton_Click(object sender, RoutedEventArgs e)
         {
             Subject subject = new Subject
             {
@@ -41,7 +41,7 @@ namespace StudentsVisitationsWPF.Forms
 
             subject.Name= name;
             MainWindow.dbMethods.AddSubject(subject);
-            MainWindow.dbMethods.Refresh("all");
+            await MainWindow.dbMethods.LoadSubjects();
             MessageBox.Show("Subject Added!");
             this.Close();
             

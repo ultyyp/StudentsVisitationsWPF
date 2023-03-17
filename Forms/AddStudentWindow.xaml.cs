@@ -95,7 +95,9 @@ namespace StudentsVisitationsWPF
 
 
             MainWindow.dbMethods.AddStudent(st);
-            MainWindow.dbMethods.Refresh("all");
+            await MainWindow.dbMethods.LoadStudents(false);
+            await MainWindow.dbMethods.LoadGroups();
+            await MainWindow.dbMethods.LoadStudentGroups();
 
             MessageBox.Show("Student Added!");
             this.Close();

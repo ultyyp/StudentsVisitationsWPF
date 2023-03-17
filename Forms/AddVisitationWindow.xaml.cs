@@ -65,7 +65,8 @@ namespace StudentsVisitationsWPF
             vs.Date = new DateOnly(dt.Year, dt.Month, dt.Day);
 
             MainWindow.dbMethods.AddVisit(vs);
-            MainWindow.dbMethods.Refresh("all");
+            await MainWindow.dbMethods.LoadVisitations();
+            await MainWindow.dbMethods.LoadStudentVisitations();
             MessageBox.Show("Visit Added!");
             this.Close();
         }

@@ -13,7 +13,7 @@
 
             <TabItem Header="Students">
                 <Grid Background="#FFE5E5E5">
-                    <DataGrid Name="StudentsVisitationsInfoGrid" Margin="10,28,10,242" SelectionMode="Single" AutoGenerateColumns="False"/>
+                    <DataGrid Name="StudentsVisitationsInfoGrid" Margin="400,28,10,242" SelectionMode="Single" AutoGenerateColumns="False"/>
                     <Button x:Name="SearchMY" Content="Search Student By Date" HorizontalAlignment="Left" Margin="533,302,0,0" VerticalAlignment="Top" Height="45" Width="111" FontSize="10" Click="SearchMY_Click">
                         <Button.Resources>
                             <Style TargetType="Border">
@@ -42,10 +42,10 @@
                             </Style>
                         </Button.Resources>
                     </Button>
-                    <DataGrid AutoGenerateColumns="False" x:Name="StudentsInfoGrid" Margin="10,173,414,106" SelectionMode="Single" SelectionChanged="StudentsInfoGrid_SelectionChanged" />
+                    <DataGrid AutoGenerateColumns="False" x:Name="StudentsInfoGrid" Margin="10,41,414,175" SelectionMode="Single" SelectionChanged="StudentsInfoGrid_SelectionChanged" />
                     <DataGrid AutoGenerateColumns="False" x:Name="StudentsGroupsInfoGrid" Margin="400,173,15,106" SelectionMode="Single" SelectionChanged="StudentsGroupsInfoGrid_SelectionChanged" />
-                    <Label Content="Visitations" HorizontalAlignment="Center" Margin="0,2,0,0" VerticalAlignment="Top" Width="70"/>
-                    <Label Content="Students" HorizontalAlignment="Left" Margin="163,150,0,0" VerticalAlignment="Top" Width="70"/>
+                    <Label Content="Visitations" HorizontalAlignment="Left" Margin="560,2,0,0" VerticalAlignment="Top" Width="70"/>
+                    <Label Content="Students" HorizontalAlignment="Left" Margin="163,10,0,0" VerticalAlignment="Top" Width="70" RenderTransformOrigin="0.53,0.4"/>
                     <Label Content="Groups" HorizontalAlignment="Left" Margin="558,150,0,0" VerticalAlignment="Top" Width="70"/>
                     <Button x:Name="EditStudentButton" Content="Edit Student" HorizontalAlignment="Left" Margin="233,302,0,0" VerticalAlignment="Top" Height="45" Width="95" Click="EditStudentButton_Click" >
                         <Button.Resources>
@@ -56,6 +56,10 @@
                     </Button>
                     <Label Content="Search:" HorizontalAlignment="Left" Margin="84,347,0,0" VerticalAlignment="Top"/>
                     <TextBox Name="StudentsTextBox" HorizontalAlignment="Left" Margin="132,352,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="512" Height="21" TextChanged="StudentsTextBox_TextChanged" />
+                    <Button Name="PreviousPageButton" Content="Previous Page" HorizontalAlignment="Left" Margin="10,228,0,0" VerticalAlignment="Top" Width="140" Click="PreviousPageButton_Click"/>
+                    <Button Name="NextPageButton" Content="Next Page" HorizontalAlignment="Left" Margin="233,228,0,0" VerticalAlignment="Top" Width="133" Click="NextPageButton_Click"/>
+                    <Label Name="TotalPageLabel" Content="/" HorizontalAlignment="Left" Margin="195,224,0,0" VerticalAlignment="Top" FontSize="14"/>
+                    <TextBox Name="PageTextBox" HorizontalAlignment="Left" Margin="171,226,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="24" Height="23" RenderTransformOrigin="0.613,0.069" KeyDown="PageTextBox_KeyDown"/>
                 </Grid>
             </TabItem>
 

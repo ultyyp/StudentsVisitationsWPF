@@ -15,6 +15,7 @@ using StudentsVisitationsWPF.Entities;
 using Bogus.DataSets;
 using System.IO;
 using StudentsVisitationsWPF.ValueObjects;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace StudentsVisitationsWPF
 {
@@ -238,7 +239,9 @@ namespace StudentsVisitationsWPF
                 db.Students.Include(s => s.Group).Include(s => s.Visitations);
                 await db.Students.AddAsync(student);
                 await db.SaveChangesAsync();
-                Refresh("all");
+                await LoadStudents(false);
+                await LoadGroups();
+                await LoadStudentGroups();
             }
             catch (Exception ex)
             {
@@ -252,14 +255,15 @@ namespace StudentsVisitationsWPF
             db.Visitations.Include(v => v.Subject);
             await db.Visitations.AddAsync(visit);
             await db.SaveChangesAsync();
-            Refresh("all");
+            await LoadVisitations();
+            await LoadStudentVisitations();
         }
 
         public async void AddSubject(Subject subject)
         {
             await db.Subjects.AddAsync(subject);
             await db.SaveChangesAsync();
-            Refresh("all");
+            await LoadSubjects();
         }
 
         public async void AddGroup(Group group)
@@ -267,7 +271,8 @@ namespace StudentsVisitationsWPF
             db.Groups.Include(g => g.Students);
             await db.Groups.AddAsync(group);
             await db.SaveChangesAsync();
-            Refresh("all");
+            await LoadGroups();
+            await LoadStudentGroups();
         }
 
         public bool StudentTableExists()
@@ -335,7 +340,9 @@ namespace StudentsVisitationsWPF
                     Email = randominfo.Email
                 };
                 student.Group = groups[randomnum];
-                Refresh("all");
+                await LoadStudents(false);
+                await LoadGroups();
+                await LoadStudentGroups();
                 AddStudent(student);
                 
             }
@@ -376,7 +383,9 @@ namespace StudentsVisitationsWPF
                     stu[randomnum - 1].Visitations.Add(visitation); //Adding the visitation to the student
                 }
 
-                Refresh("all");
+                await LoadVisitations();
+                await LoadStudentVisitations();
+
                 MessageBox.Show("Visitations Generated!");
 
             }
@@ -390,7 +399,7 @@ namespace StudentsVisitationsWPF
             }
         }
 
-        public void GenerateSubjects(int ammount)
+        public async void GenerateSubjects(int ammount)
         {
             if (ammount == 0) { return; }
 
@@ -413,12 +422,13 @@ namespace StudentsVisitationsWPF
                 };
                 AddSubject(subject);
             }
-            Refresh("all");
+            await LoadSubjects();
+
             MessageBox.Show("Subjects Generated!");
 
         }
 
-        public void GenerateGroups(int ammount)
+        public async void GenerateGroups(int ammount)
         {
             if (ammount == 0) { return; }
 
@@ -437,7 +447,8 @@ namespace StudentsVisitationsWPF
                     CreationDate = DateTime.Now
                 };
                 AddGroup(group);
-                Refresh("all");
+                await LoadGroups();
+                await LoadStudentGroups();
             }
             MessageBox.Show("Groups Generated!");
         }
@@ -464,7 +475,9 @@ namespace StudentsVisitationsWPF
             {
                 await db.Database.ExecuteSqlRawAsync("DELETE FROM Students");
                 db.ChangeTracker.Clear();
-                Refresh("all");
+                await LoadStudents(false);
+                await LoadGroups();
+                await LoadStudentGroups();
                 MessageBox.Show("Cleared!");
             }
             catch
@@ -478,7 +491,10 @@ namespace StudentsVisitationsWPF
         {
             await db.Database.ExecuteSqlRawAsync("DELETE FROM Visitations");
             db.ChangeTracker.Clear();
-            Refresh("all");
+
+            await LoadVisitations();
+            await LoadStudentVisitations();
+
             MessageBox.Show("Cleared!");
         }
 
@@ -488,7 +504,11 @@ namespace StudentsVisitationsWPF
             {
                 await db.Database.ExecuteSqlRawAsync("DELETE FROM Subjects");
                 db.ChangeTracker.Clear();
-                Refresh("all");
+
+                await LoadSubjects();
+                await LoadVisitations();
+                await LoadStudentVisitations();
+
                 MessageBox.Show("Cleared!");
             }
             catch
@@ -505,7 +525,12 @@ namespace StudentsVisitationsWPF
             {
                 await db.Database.ExecuteSqlRawAsync("DELETE FROM Groups");
                 db.ChangeTracker.Clear();
-                Refresh("all");
+
+                await LoadGroups();
+                await LoadStudentGroups();
+                await LoadVisitations();
+                await LoadStudentVisitations();
+
                 MessageBox.Show("Cleared!");
             }
             catch
@@ -515,68 +540,152 @@ namespace StudentsVisitationsWPF
             
         }
 
-
-        public async void Refresh(string choice)
+        public async Task LoadAll(bool isSearching)
         {
-            var studentgrid = ((MainWindow)Application.Current.MainWindow).StudentsInfoGrid;
-            var studentvisitsgrid = ((MainWindow)Application.Current.MainWindow).StudentsVisitationsInfoGrid;
-            var studentgroupsgrid = ((MainWindow)Application.Current.MainWindow).StudentsGroupsInfoGrid;
-            var subjectgrid = ((MainWindow)Application.Current.MainWindow).SubjectsInfoGrid;
-            var groupgrid = ((MainWindow)Application.Current.MainWindow).GroupsInfoGrid;
-            var visitationsgrid = ((MainWindow)Application.Current.MainWindow).VisitationsInfoGrid;
+            await LoadAllStudentTabGrids(isSearching);
+            await LoadSubjects();
+            await LoadGroups();
+            await LoadVisitations();
+        }
 
-            choice = choice.ToLower();
-            switch (choice)
+        public async Task LoadSubjects()
+        {
+            var subjectgrid = ((MainWindow)System.Windows.Application.Current.MainWindow).SubjectsInfoGrid;
+
+            var subjs = await db.Subjects.ToListAsync();
+            subjectgrid.ItemsSource = subjs;
+        }
+
+        public async Task LoadVisitations()
+        {
+            var visitationsgrid = ((MainWindow)System.Windows.Application.Current.MainWindow).VisitationsInfoGrid;
+
+            var vsts = await db.Visitations.Include(v => v.Student).Include(v => v.Subject).ToListAsync();
+            visitationsgrid.ItemsSource = vsts;
+        }
+
+        public static int _studentsPageIndex = 0;
+        public static int _studentsCount = 0;
+        public static int _studentsPerPage = 10;
+        public static double _pageCount = 0;
+
+        public async Task LoadStudents(bool isSearching)
+        {
+            var studentsGrid = ((MainWindow)System.Windows.Application.Current.MainWindow).StudentsInfoGrid;
+            var studentsTextBox = ((MainWindow)System.Windows.Application.Current.MainWindow).StudentsTextBox;
+            var previousButton = ((MainWindow)System.Windows.Application.Current.MainWindow).PreviousPageButton;
+            var nextButton = ((MainWindow)System.Windows.Application.Current.MainWindow).NextPageButton;
+            var totalPageLabel = ((MainWindow)System.Windows.Application.Current.MainWindow).TotalPageLabel;
+            var pageTextBox = ((MainWindow)System.Windows.Application.Current.MainWindow).PageTextBox;
+
+            if (isSearching == true)
             {
-                case "allstudents":
-                    var st = await db.Students.Include(stu => stu.Visitations).ToListAsync();
-                    studentgrid.ItemsSource = st;
+                var _studentMatchesCount = await db.Students
+                    .Where(s => EF.Functions.Like(s.FIO, $"%{studentsTextBox.Text}%"))
+                    .CountAsync();
 
-                    var gs = await db.Groups.Include(g => g.Students).ToListAsync();
-                    studentgroupsgrid.ItemsSource = gs;
+                var studentMatches = await db.Students
+                    .Include(s => s.Visitations)
+                    .Include(s => s.Group)
+                    .Where(s => EF.Functions.Like(s.FIO, $"%{studentsTextBox.Text}%"))
+                    .Skip(_studentsPageIndex * _studentsPerPage)
+                    .Take(_studentsPerPage)
+                    .ToListAsync();
 
-                    var vs = await db.Visitations.Include(v => v.Student).Include(v => v.Subject).ToListAsync();
-                    studentvisitsgrid.ItemsSource = vs;
-                    break;
+                studentsGrid.ItemsSource = studentMatches;
+                previousButton.IsEnabled = _studentsPageIndex > 0;
 
-                case "groups":
-                    var grps = await db.Groups.Include(g => g.Students).ToListAsync();
-                    groupgrid.ItemsSource = grps;
-                    break;
+                var pageCount = Math.Ceiling((double)_studentMatchesCount / _studentsPerPage);
+                _pageCount = pageCount;
+                totalPageLabel.Content = $"/{pageCount}";
+                pageTextBox.Text = $"{_studentsPageIndex+1}";
+                var lastPageIndex = pageCount - 1;
+                nextButton.IsEnabled = _studentsPageIndex < lastPageIndex;
 
-                case "students":
-                    var stus = await db.Students.Include(stu => stu.Visitations).ToListAsync();
-                    studentgrid.ItemsSource = stus;
-                    break;
-
-                case "visitations":
-                    var vsts= await db.Visitations.Include(v => v.Student).Include(v => v.Subject).ToListAsync();
-                    visitationsgrid.ItemsSource = vsts;
-                    break;
-
-                case "subjects":
-                    var subjs= await db.Subjects.ToListAsync();
-                    subjectgrid.ItemsSource = subjs;
-                    break;
-
-                case "all":
-                default:
-                    var students = await db.Students.Include(stu => stu.Visitations).ToListAsync();
-                    studentgrid.ItemsSource = students;
-
-                    var subjects = await db.Subjects.ToListAsync();
-                    subjectgrid.ItemsSource = subjects;
-
-                    var groups = await db.Groups.Include(g => g.Students).ToListAsync();
-                    groupgrid.ItemsSource = groups;
-                    studentgroupsgrid.ItemsSource = groups;
-
-                    var visitations = await db.Visitations.Include(v => v.Student).Include(v => v.Subject).ToListAsync();
-                    visitationsgrid.ItemsSource = visitations;
-                    studentvisitsgrid.ItemsSource = visitations;
-
-                    break;
             }
+            else if(isSearching == false)
+            {
+                _studentsCount = await GetStudentsCount();
+                List<Student> students = await db.Students
+                    .Skip(_studentsPageIndex * _studentsPerPage)
+                    .Take(_studentsPerPage)
+                    .ToListAsync();
+
+                studentsGrid.ItemsSource = students;
+                previousButton.IsEnabled = _studentsPageIndex > 0;
+
+                var pageCount = Math.Ceiling((double) _studentsCount / _studentsPerPage);
+                _pageCount = pageCount;
+                totalPageLabel.Content = $"/{pageCount}";
+                pageTextBox.Text = $"{_studentsPageIndex+1}";
+                var lastPageIndex = pageCount- 1;
+                nextButton.IsEnabled = _studentsPageIndex < lastPageIndex;
+            }
+        }
+
+        public void pageIndexNext()
+        {
+            _studentsPageIndex++;
+        }
+
+        public void pageIndexPrevious()
+        {
+            _studentsPageIndex--;
+        }
+
+        public void setPageIndex(int index)
+        {
+            var pageTextBox = ((MainWindow)System.Windows.Application.Current.MainWindow).PageTextBox;
+            if (index > _pageCount)
+            {
+                _studentsPageIndex = int.Parse( _pageCount.ToString())-1;
+                pageTextBox.Text = _pageCount.ToString();
+                return;
+            }
+            else
+            {
+                _studentsPageIndex = index;
+            }
+        }
+
+
+
+        public async Task LoadGroups()
+        {
+            var groupgrid = ((MainWindow)System.Windows.Application.Current.MainWindow).GroupsInfoGrid;
+
+            var grps = await db.Groups.Include(g => g.Students).ToListAsync();
+            groupgrid.ItemsSource = grps;
+        }
+
+        public async Task LoadAllStudentTabGrids(bool isSearching)
+        {
+            var studentvisitsgrid = ((MainWindow)System.Windows.Application.Current.MainWindow).StudentsVisitationsInfoGrid;
+            var studentgroupsgrid = ((MainWindow)System.Windows.Application.Current.MainWindow).StudentsGroupsInfoGrid;
+
+            await LoadStudents(isSearching);
+
+            var gs = await db.Groups.Include(g => g.Students).ToListAsync();
+            studentgroupsgrid.ItemsSource = gs;
+
+            var vs = await db.Visitations.Include(v => v.Student).Include(v => v.Subject).ToListAsync();
+            studentvisitsgrid.ItemsSource = vs;
+        }
+
+        public async Task LoadStudentVisitations()
+        {
+            var studentvisitsgrid = ((MainWindow)System.Windows.Application.Current.MainWindow).StudentsVisitationsInfoGrid;
+
+            var vsts = await db.Visitations.Include(v => v.Student).Include(v => v.Subject).ToListAsync();
+            studentvisitsgrid.ItemsSource = vsts;
+        }
+
+        public async Task LoadStudentGroups()
+        {
+            var studentgroupsgrid = ((MainWindow)System.Windows.Application.Current.MainWindow).StudentsGroupsInfoGrid;
+
+            var grps = await db.Groups.Include(g => g.Students).ToListAsync();
+            studentgroupsgrid.ItemsSource = grps;
         }
     }
 }

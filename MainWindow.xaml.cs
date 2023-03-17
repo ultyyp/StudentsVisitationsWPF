@@ -43,7 +43,7 @@ namespace StudentsVisitationsWPF
             Language = XmlLanguage.GetLanguage("en-UK");
         }
 
-        private void Window_Loaded(object sender, RoutedEventArgs e)
+        private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
 
             StudentsInfoGrid.BeginningEdit += (s, ss) => ss.Cancel = true; //Fix for crashes
@@ -54,7 +54,7 @@ namespace StudentsVisitationsWPF
             GroupsInfoGrid.BeginningEdit += (s, ss) => ss.Cancel = true;
 
             DataGridMethods.InitialiseGrids();
-            dbMethods.Refresh("all");
+            await dbMethods.LoadAll(false);
         }
 
         private void SearchVisitationButton_Click(object sender, RoutedEventArgs e)
@@ -209,29 +209,26 @@ namespace StudentsVisitationsWPF
             await dispatcher.Debounce(250, () => SearchVisitations());
         }
 
+        static bool _isSearching = false;
+
         public async Task SearchStudents()
         {
             if (StudentsTextBox.Text.Trim().Length == 0)
             {
-                StudentsInfoGrid.ItemsSource = await dbMethods.db.Students.Include(stu => stu.Visitations).ToListAsync();
-
-                StudentsGroupsInfoGrid.ItemsSource = await dbMethods.db.Groups.Include(g => g.Students).ToListAsync();
-
-                StudentsVisitationsInfoGrid.ItemsSource = await dbMethods.db.Visitations.Include(v => v.Student).Include(v => v.Subject).ToListAsync();
-
+                _isSearching = false;
+                await dbMethods.LoadAllStudentTabGrids(_isSearching);
                 return;
             }
 
+            _isSearching = true;
             var text = StudentsTextBox.Text;
 
 
-            var studentMatches = await dbMethods.db.Students
-                    .Include(s => s.Visitations)
-                    .Include(s => s.Group)
-                    .Where(s => EF.Functions.Like(s.FIO, $"%{text}%"))
-                    .ToListAsync();
+            
 
-            StudentsInfoGrid.ItemsSource = studentMatches;
+            await dbMethods.LoadStudents(_isSearching);
+            //StudentsInfoGrid.ItemsSource = studentMatches;
+
 
             var visitationsMatches = await dbMethods.db.Visitations
                 .Include(s => s.Student)
@@ -315,6 +312,34 @@ namespace StudentsVisitationsWPF
             }
         }
 
+        private async void PreviousPageButton_Click(object sender, RoutedEventArgs e)
+        {
+            dbMethods.pageIndexPrevious();
+            await dbMethods.LoadStudents(_isSearching);
+        }
+
+        private async void NextPageButton_Click(object sender, RoutedEventArgs e)
+        {
+            dbMethods.pageIndexNext();
+            await dbMethods.LoadStudents(_isSearching);
+        }
+
+        private async void PageTextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if(e.Key == Key.Enter)
+            {
+                try
+                {
+                    var page = int.Parse(PageTextBox.Text);
+                    dbMethods.setPageIndex(page-1);
+                    await dbMethods.LoadStudents(_isSearching);
+                }
+                catch
+                {
+                    return;
+                }
+            }
+        }
     }
 
    
