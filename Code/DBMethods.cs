@@ -642,6 +642,12 @@ namespace StudentsVisitationsWPF
                 pageTextBox.Text = _pageCount.ToString();
                 return;
             }
+            else if(index<=0)
+            {
+                _studentsPageIndex = 0;
+                pageTextBox.Text = "1";
+                return;
+            }
             else
             {
                 _studentsPageIndex = index;
