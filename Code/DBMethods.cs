@@ -16,12 +16,15 @@ using Bogus.DataSets;
 using System.IO;
 using StudentsVisitationsWPF.ValueObjects;
 using static System.Net.Mime.MediaTypeNames;
+using System.Data;
+using Dapper;
+using Microsoft.Data.Sqlite;
 
 namespace StudentsVisitationsWPF
 {
     public class DBMethods
     {
-        public static string path = ""; //Path to db
+        public static string path = "C:\\Users\\Yehia\\source\\repos\\StudentsVisitationsWPF8\\mydatabase.db"; //Path to db
         public static string ConnectionString = "Data Source=" + path;
         public AppDbContext db = new AppDbContext();
         public SqliteConnection connection = new SqliteConnection(ConnectionString);
@@ -564,10 +567,10 @@ namespace StudentsVisitationsWPF
             visitationsgrid.ItemsSource = vsts;
         }
 
-        public static int _studentsPageIndex = 0;
-        public static int _studentsCount = 0;
-        public static int _studentsPerPage = 10;
-        public static double _pageCount = 0;
+        int _studentsPageIndex = 0;
+        int _studentsCount = 0;
+        int _studentsPerPage = 10;
+        double _pageCount = 0;
 
         public async Task LoadStudents(bool isSearching)
         {
@@ -693,5 +696,54 @@ namespace StudentsVisitationsWPF
             var grps = await db.Groups.Include(g => g.Students).ToListAsync();
             studentgroupsgrid.ItemsSource = grps;
         }
+
+
+
+        public IReadOnlyList<Student> GetStudentsDapper()
+        {
+            var sql = "select * from Students";
+            using (var connection = new SqliteConnection(ConnectionString))
+            {
+                IEnumerable<Student> students = connection.Query<Student>(sql);
+                return students.ToList();
+            }
+        }
+
+        public async Task<Student> GetStudentByIdDapper(Guid id)
+        {
+            var sql = @"select * from Students where Id=@id";
+            using (var connection = new SqliteConnection(ConnectionString))
+            {
+                Student? student = await connection
+                .QuerySingleAsync<Student>(sql, new { id });
+                return student;
+            }
+        }
+
+        public async Task<IReadOnlyList<Student>> AddStudentsAsyncDapper(
+        IEnumerable<Student> students)
+        {
+            using (var connection = new SqliteConnection(ConnectionString))
+            {
+                var sql = @"insert into students (Id, FIO, DOB)
+                values (@Id, @FIO, @DOB)";
+                await connection.QueryAsync<Student>(sql, students);
+                return students.ToList();
+            }
+        }
+
+        public async Task DeleteStudentDapper(Guid id)
+        {
+            var sql = @"DELETE FROM students WHERE Id = @id;";
+            using (var connection = new SqliteConnection(ConnectionString))
+            {
+                Student? student = await connection
+                .QuerySingleAsync<Student>(sql, new { id });
+            }
+        }
+
+
+
+
     }
 }
